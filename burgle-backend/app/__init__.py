@@ -33,7 +33,9 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from app.extensions import db, migrate
-from app.models import *
+from app.models.models import bcrypt, User
+from flask_login import LoginManager
+from app.routes.auth import auth_bp
 
 def create_app():
     app = Flask(__name__)
@@ -46,10 +48,18 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     
+    login_manager = LoginManager(app)
+    login_manager.login_view = "auth.login"
+
     # Import models after db initialization
-    
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+
+# Register Blueprints
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+
     # Register blueprints or routes
-    from app.routes import main_bp
+    from app.routes.routes import main_bp
     app.register_blueprint(main_bp)
     
     return app
