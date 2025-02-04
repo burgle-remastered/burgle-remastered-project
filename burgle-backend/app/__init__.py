@@ -44,6 +44,7 @@ def create_app():
     # Direct database configuration without dotenv for now
     app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres@localhost/burgle"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SECRET_KEY'] = 'burgers'
     # Initialize extensions with the app
     db.init_app(app)
     migrate.init_app(app, db)
@@ -52,6 +53,7 @@ def create_app():
     login_manager.login_view = "auth.login"
 
     # Import models after db initialization
+    @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
 
