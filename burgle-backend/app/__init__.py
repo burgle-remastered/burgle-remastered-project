@@ -34,6 +34,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from app.extensions import db, migrate
 from app.models.users import bcrypt, User
+from app.models.burgers import Burger
 from flask_login import LoginManager
 from app.routes.auth import auth_bp
 
