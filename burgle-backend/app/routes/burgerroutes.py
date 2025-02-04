@@ -20,7 +20,11 @@ def get_all_burgers():
         "top_bun": burger.top_bun,
         "meat": burger.meat,
         "cheese": burger.cheese,
+        "sauce":burger.sauce,
         "bottom_bun": burger.bottom_bun,
+        "pickles": burger.pickles or None,
+        "lettuce": burger.lettuce or None,
+        "tomato": burger.tomato or None,
         "spoon_count": burger.spoon_count,
         "created_at": burger.created_at.strftime("%Y-%m-%d"),  # Format date as string
         "user_id": burger.user_id
@@ -41,6 +45,10 @@ def get_burger_by_date(date):
     "top_bun": burger.top_bun,
     "meat": burger.meat,
     "cheese": burger.cheese,
+    "sauce": burger.sauce,
+    "pickles": burger.pickles or None,
+    "lettuce": burger.lettuce or None,
+    "tomato": burger.tomato or None,
     "bottom_bun": burger.bottom_bun,
     "spoon_count": burger.spoon_count,
     "created_at": burger.created_at,
@@ -49,7 +57,7 @@ def get_burger_by_date(date):
 
 @burger_bp.route('/', methods = ['POST'])
 def create_burger():
-  # {"top_bun": "wakeup", "meat": "go to marcy", "cheese": "eat lunch", "bottom_bun": "sleep", "spoon_count": 20}
+  # {"top_bun": "wakeup", "meat": "go to marcy", "cheese": "eat lunch", "sauce":"journal", "bottom_bun": "sleep", "spoon_count": 20}
   data = request.get_json()
   print(data)
   if not current_user.is_authenticated:
@@ -69,6 +77,7 @@ def create_burger():
     top_bun=data['top_bun'],
     meat=data['meat'],
     cheese=data['cheese'],
+    sauce=data['sauce'],
     bottom_bun=data['bottom_bun'],
     spoon_count=data['spoon_count'],
     created_at=date.today(),
@@ -95,9 +104,14 @@ def update_burger(burger_id):
 
   burger = Burger.query.filter_by(id=burger_id, user_id=user.id).first() 
 
+  pickles = data.get('pickles')
+  lettuce = data.get('lettuce')
+  tomato = data.get('tomato')
+
   new_top_bun = data.get('top_bun')
   new_meat = data.get('meat')
   new_cheese = data.get('cheese')
+  new_sauce = data.get('sauce')
   new_bottom_bun = data.get('bottom_bun')
   new_spoon_count = data.get('spoon_count')
 
@@ -107,10 +121,18 @@ def update_burger(burger_id):
     burger.meat = new_meat
   if new_cheese:
     burger.cheese = new_cheese
+  if new_sauce:
+    burger.sauce = new_sauce
   if new_bottom_bun:
     burger.bottom_bun = new_bottom_bun
   if new_spoon_count:
     burger.spoon_count = new_spoon_count
+  if pickles:
+    burger.pickles = pickles
+  if lettuce:
+    burger.lettuce = lettuce
+  if tomato:
+    burger.tomato = tomato
 
   try:
     db.session.commit()
@@ -131,6 +153,10 @@ def get_burger(burger_id):
     "top_bun": burger.top_bun,
     "meat": burger.meat,
     "cheese": burger.cheese,
+    "sauce": burger.sauce,
+    "pickles": burger.pickles or None,
+    "lettuce": burger.lettuce or None,
+    "tomato": burger.tomato or None,
     "bottom_bun": burger.bottom_bun,
     "spoon_count": burger.spoon_count,
     "created_at": burger.created_at,
