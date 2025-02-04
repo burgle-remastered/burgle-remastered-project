@@ -1,7 +1,8 @@
 from flask import Blueprint, request
 from flask_login import login_user, logout_user, login_required
 from app.models.users import User, db
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
+
 
 auth_bp = Blueprint('auth', __name__)
 login_manager = LoginManager()
@@ -40,6 +41,7 @@ def register():
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    # {"username":"Madison", "email":"madisontolentino@gmail.com","password":"helloworld"}
     if request.method == 'POST':
         data = request.get_json()
         email = data.get('email')
@@ -76,11 +78,10 @@ def get_user(username):
 
 @auth_bp.route('/user/<username>', methods=['DELETE'])
 def delete_user(username):
-    user = User.query.filter_by(username=username).first()
+    if not current_user.is_authenticated:
+        return {"error": "User not authenticated"}, 401  # Unauthorized if the user is not logged in
 
-    if not user:
-        return {"error": "User not found"}, 404
-
+    user = current_user
     if request.method == 'DELETE':
         try:
             db.session.delete(user)
@@ -97,10 +98,10 @@ def delete_user(username):
 
 @auth_bp.route('/user/<username>', methods=['PATCH'])
 def update_user(username):
-    user = User.query.filter_by(username=username).first()
+    if not current_user.is_authenticated:
+        return {"error": "User not authenticated"}, 401  # Unauthorized if the user is not logged in
 
-    if not user:
-        return {"error": "User not found"}, 404
+    user = current_user
 
     data = request.get_json()
     new_username = data.get('username')

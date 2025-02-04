@@ -37,6 +37,7 @@ from app.models.users import bcrypt, User
 from app.models.burgers import Burger
 from flask_login import LoginManager
 from app.routes.auth import auth_bp
+from app.routes.burgerroutes import burger_bp
 
 def create_app():
     app = Flask(__name__)
@@ -57,9 +58,13 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
+    def load_burger(user_id):
+        return Burger.query.get(int(user_id))
 
 # Register Blueprints
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(burger_bp, url_prefix='/burger')
+
 
     # Register blueprints or routes
     from app.routes.routes import main_bp
