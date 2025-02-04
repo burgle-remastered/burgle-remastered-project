@@ -15,7 +15,7 @@ def register():
     #print(f"🔹 Username: {username}, Email: {email}, Password: {password}")
 
     if not username or not email or not password:
-        return {"error": "Email and password are required"}, 400
+        return {"error": "Username, email and password are required"}, 400
 
     existing_user = User.query.filter_by(email=email).first()
     if existing_user:
@@ -27,11 +27,11 @@ def register():
     try:
         db.session.add(new_user)
         db.session.commit()
-        #print("✅ User successfully added to database!")  # Debugging statement
+        #print("✅ User successfully added to database!") 
         return {"message": "Registration successful"}, 201
     except Exception as e:
         db.session.rollback()  # Rollback in case of error
-        print(f"❌ Database Commit Error: {e}")  # Debugging statement
+        print(f"❌ Database Commit Error: {e}")  
         return {"error": "Database error"}, 500
 
 

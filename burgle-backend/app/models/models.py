@@ -1,4 +1,4 @@
-#from ..extensions import db
+# from ..extensions import db
 from app.extensions import db
 from flask_bcrypt import Bcrypt
 import os
