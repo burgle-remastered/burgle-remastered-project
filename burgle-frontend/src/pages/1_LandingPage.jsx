@@ -1,9 +1,10 @@
 import { useState } from "react";
+import BurgrLogo from "../components/BurgrLogo";
 
 export default function LandingPage() {
     return (
         <>
-            <h1>BurgrDay!</h1>
+            <BurgrLogo />
             <div className="landingPageButtons">
                 <div id="logInButtonMess">Old?</div>
                 {/* this will route to the log in page */}
