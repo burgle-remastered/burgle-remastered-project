@@ -21,6 +21,7 @@ export default function AccountPage() {
   }, [])
 
   const handleUpdate = async (currentUser) => {
+    // since its a button it doesnt have to be in useEffect()
     try {
       const response = await axios.patch(`http://127.0.0.1:5000/auth/${currentUser.username}`)
       console.log("Account updated:", response.data)
