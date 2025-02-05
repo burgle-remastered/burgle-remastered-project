@@ -35,7 +35,7 @@ def register():
         return {"message": "Registration successful"}, 201
     except Exception as e:
         db.session.rollback()  # Rollback in case of error
-        print(f"❌ Database Commit Error: {e}")  
+        #print(f"❌ Database Commit Error: {e}")  
         return {"error": "Database error"}, 500
 
 
@@ -46,7 +46,7 @@ def login():
         data = request.get_json()
         email = data.get('email')
         password = data.get('password')
-        print(type(password))
+        #print(type(password))
 
         user = User.query.filter_by(email=email).first()
         #print(user)

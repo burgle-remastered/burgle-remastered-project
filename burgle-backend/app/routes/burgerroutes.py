@@ -59,7 +59,7 @@ def get_burger_by_date(date):
 def create_burger():
   # {"top_bun": "wakeup", "meat": "go to marcy", "cheese": "eat lunch", "sauce":"journal", "bottom_bun": "sleep", "spoon_count": 20}
   data = request.get_json()
-  print(data)
+  # print(data)
   if not current_user.is_authenticated:
     return {"error": "User not authenticated"}, 401  
 
@@ -68,7 +68,7 @@ def create_burger():
   if not user:
     return {"error": "User not found"}, 404
   
-  existing_burger = Burger.query.filter_by(created_at=date.today()).first()
+  existing_burger = Burger.query.filter_by(created_at=date.today()).first() #premake tmrws burger (stretch)
 
   if existing_burger:
     return {"error": "Burger already created today"}, 404
