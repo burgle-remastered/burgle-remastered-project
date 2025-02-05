@@ -64,8 +64,6 @@ Burgle!: Remastered was inspired by the regulation/time management strategy for 
 
 As a user, I want to sign up/log in, so that I can access my account and burgers.
 
-As a user, I want to change my password, so that I can access my account and burgers.
-
 As a user, I want to be able to contact the development team, so that I can notify them of any bugs or fixes required.
 
 As a user, I want to update my account, so that my information is up-to-date.
