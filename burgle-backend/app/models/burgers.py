@@ -13,6 +13,7 @@ class Burger(db.Model):
     bottom_bun = db.Column(db.String(200), nullable=False)
     spoon_count = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.Date, nullable=False)
+    is_template = db.Column(db.Boolean, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  
 
     user = db.relationship('User', backref=db.backref('burgers', lazy=True))
