@@ -27,6 +27,7 @@ def get_all_burgers():
         "tomato": burger.tomato or None,
         "spoon_count": burger.spoon_count,
         "created_at": burger.created_at.strftime("%Y-%m-%d"),  # Format date as string
+        "is_template": burger.is_template or None,
         "user_id": burger.user_id
         }
         for burger in burgers
@@ -51,7 +52,8 @@ def get_burger_by_date(date):
     "tomato": burger.tomato or None,
     "bottom_bun": burger.bottom_bun,
     "spoon_count": burger.spoon_count,
-    "created_at": burger.created_at,
+    "created_at": burger.created_at.strftime("%Y-%m-%d"),
+    "is_template": burger.is_template or None,
     "user_id": burger.user_id
   }
 
@@ -107,6 +109,7 @@ def update_burger(burger_id):
   pickles = data.get('pickles')
   lettuce = data.get('lettuce')
   tomato = data.get('tomato')
+  is_template = data.get('is_template')
 
   new_top_bun = data.get('top_bun')
   new_meat = data.get('meat')
@@ -133,6 +136,8 @@ def update_burger(burger_id):
     burger.lettuce = lettuce
   if tomato:
     burger.tomato = tomato
+  if is_template:
+    burger.is_template = is_template
 
   try:
     db.session.commit()
@@ -159,7 +164,8 @@ def get_burger(burger_id):
     "tomato": burger.tomato or None,
     "bottom_bun": burger.bottom_bun,
     "spoon_count": burger.spoon_count,
-    "created_at": burger.created_at,
+    "created_at": burger.created_at.strftime("%Y-%m-%d"),
+    "is_template": burger.is_template or None,
     "user_id": burger.user_id
   }
 
