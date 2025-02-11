@@ -32,9 +32,12 @@ export default function LoginPage() {
               });
             const user = response.data
             Cookies.set('currentUser', JSON.stringify(user), { expires: 7 })
-            // console.log({user})
             setCurrentUser(user)
-            navigate(`/users/${user.id}`);  // Navigate to user page
+            // console.log(user[0].user_id)
+            setTimeout(() => {
+                navigate(`/users/${user[0].user_id}`);  // cookies weren't being set in time so we need to wait
+              }, 100); 
+            ;  // Navigate to user page // 3: number
           } catch (error) {
             setErrorText(error.response?.data?.error || 'An error occurred during login.')
           }

@@ -142,15 +142,33 @@ export default function AccountPage() {
     fetchBurgers();
   }, []);
 
-  const handleUpdate = async (currentUser) => {
+  const handleUpdate = async (event) => {
+    event.preventDefault();
+    setError('');
+    const formData = new FormData(event.target)
+    const formObject = Object.fromEntries(formData)
+    // console.log(formData)
+    // console.log(formObject)
     try {
+      const user = JSON.parse(Cookies.get('currentUser')) 
+      const userData = {
+        user_id: user[0].user_id,
+        username: formObject.username || user.username,
+        email: formObject.email || user.email,
+        password: formObject.password || user.password
+      };
+      // console.log(user)
+      
+      console.log("User to update:", userData)
       const response = await axios.patch(
-        `http://127.0.0.1:5000/auth/${currentUser.username}`,
+        `http://127.0.0.1:5000/auth/user/${userData.user_id}`, userData,
         {
           withCredentials: true,
           headers: {
-            "Content-Type": "application/json", // We're sending JSON here
-          },
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": `http://127.0.0.1:5000/auth/user/${userData.user_id}`,
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+          }
         }
       );
       console.log("Account updated:", response.data);
@@ -159,10 +177,11 @@ export default function AccountPage() {
     }
   };
 
-  const handleDelete = async (currentUser) => {
+  const handleDelete = async () => {
     try {
+      const user = JSON.parse(Cookies.get('currentUser')) 
       const response = await axios.delete(
-        `http://127.0.0.1:5000/auth/${currentUser.username}`,
+        `http://127.0.0.1:5000/auth/${user.username}`,
         {
           withCredentials: true,
           headers: {
@@ -191,8 +210,48 @@ export default function AccountPage() {
           )}
         </ul>
         <ul>
-          <button onClick={() => handleUpdate(currentUser)}>Update Account</button>
-          <button onClick={() => handleDelete(currentUser)}>Delete Account</button>
+        <div className="Update-Form">
+                <form onSubmit={handleUpdate} aria-labelledby="update-heading">
+                    <h2 id="update-heading" className="header2">
+                        Fix Your Account, Toots!
+                    </h2>
+
+                    <div className="usernameBlock">
+                        <label htmlFor="username" className="username">Username</label>
+                        <input
+                            type="text"
+                            autoComplete="username"
+                            id="username"
+                            name="username"
+                            placeholder="Enter your username"
+                        />
+                    </div>
+                    <div className="emailBlock">
+                        <label htmlFor="email" className="email">Email</label>
+                        <input
+                            type="text"
+                            autoComplete="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                        />
+                    </div>
+
+                    <div className="passwordBlock">
+                        <label htmlFor="password" className="password">Password</label>
+                        <input
+                            type="password"
+                            autoComplete="current-password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                        />
+                    </div>
+
+                    <button>Update!</button>
+                </form>
+              </div>
+          <button onClick={() => handleDelete()}>Delete Account</button>
         </ul>
       </div>
     </>
