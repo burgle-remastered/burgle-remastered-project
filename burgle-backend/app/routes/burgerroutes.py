@@ -1,40 +1,35 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from app.models.burgers import Burger, db
 from app.models.users import User
 from datetime import date
 from flask_login import current_user
+from flask_cors import cross_origin
 
 burger_bp = Blueprint('burger', __name__)
 
-@burger_bp.route('/all', methods = ['GET'])
+@burger_bp.route('/all', methods = ['POST','GET'])
+@cross_origin(methods=['POST','GET'], supports_credentials=True, origin='http://127.0.0.1:5000')
 def get_all_burgers():
-  if not current_user.is_authenticated:
-    return {"error": "User not authenticated"}, 401  # Unauthorized if the user is not logged in
+  data = request.json
+  user_data = data.get('body').get('user')
+  
+  if not user_data:
+        return jsonify({'error': 'Unauthorized'}), 401
 
-  user = current_user
+  
+  user = User.query.get(user_data) 
+
+  if not user:
+    return {"error": "Invalid session"}, 401
+  
+  
   burgers = Burger.query.filter_by(user_id=user.id).all() 
-  return {
-    "burgers": [
-      {
-        "id": burger.id,
-        "top_bun": burger.top_bun,
-        "meat": burger.meat,
-        "cheese": burger.cheese,
-        "sauce":burger.sauce,
-        "bottom_bun": burger.bottom_bun,
-        "pickles": burger.pickles or None,
-        "lettuce": burger.lettuce or None,
-        "tomato": burger.tomato or None,
-        "spoon_count": burger.spoon_count,
-        "created_at": burger.created_at.strftime("%Y-%m-%d"),  # Format date as string
-        "is_template": burger.is_template or None,
-        "user_id": burger.user_id
-        }
-        for burger in burgers
-      ]
-    }, 200
+  burgers_dict = [burger.to_dict() for burger in burgers]
+  return jsonify({'burgers': burgers_dict})
+
 
 @burger_bp.route('/<string:date>', methods = ['GET'])
+@cross_origin(methods=['GET'], supports_credentials=True, origin='http://127.0.0.1:5000')
 def get_burger_by_date(date):
   if not current_user.is_authenticated:
     return {"error": "User not authenticated"}, 401  # Unauthorized if the user is not logged in
@@ -97,6 +92,7 @@ def create_burger():
     return {"error": "Database error"}, 500
 
 @burger_bp.route('/<int:burger_id>', methods = ['PATCH'])
+@cross_origin(methods=['PATCH'], supports_credentials=True, origin='http://127.0.0.1:5000')
 def update_burger(burger_id):
   data = request.get_json()
   if not current_user.is_authenticated:
@@ -147,6 +143,7 @@ def update_burger(burger_id):
     return {"error": f"Failed to update burger {e}"}, 500
   
 @burger_bp.route('/<int:burger_id>', methods = ['GET'])
+@cross_origin(methods=['GET'], supports_credentials=True, origin='http://127.0.0.1:5000')
 def get_burger(burger_id):
   if not current_user.is_authenticated:
     return {"error": "User not authenticated"}, 401  # Unauthorized if the user is not logged in
@@ -170,6 +167,7 @@ def get_burger(burger_id):
   }
 
 @burger_bp.route('/<int:burger_id>', methods=['DELETE'])
+@cross_origin(methods=['DELETE'], supports_credentials=True, origin='http://127.0.0.1:5000')
 def delete_burger(burger_id):
     if not current_user.is_authenticated:
       return {"error": "User not authenticated"}, 401  

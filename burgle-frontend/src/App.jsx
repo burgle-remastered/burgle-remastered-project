@@ -9,6 +9,7 @@ import LoginPage from './pages/1.1_LogInPage'
 import SignUp from './pages/1.2_SignUpPage'
 import Kitchen from './pages/3_Kitchen'
 import IngredientTaskList from './pages/3.1_IngredientTaskList'
+import AccountPage from './pages/AccountPage';
 
 // import UserContext from './contexts/current-user-context';
 // import { checkForLoggedInUser } from './adapters/auth-adapter';
@@ -32,7 +33,7 @@ function App() {
           <Route path='/no-acc' element={<NoAccPage />} />
           <Route path='/login' element={<LoginPage />} />
           <Route path='/signup' element={<SignUp />} />
-          <Route path='/users/:id' element={{/* account */ }} />
+          <Route path='/users/:id' element={<AccountPage />} />
           <Route path='/users/:id/kitchen' element={<Kitchen />} />
           <Route path='/users/:id/:burgerid' element={<IngredientTaskList />} />
         </Routes>

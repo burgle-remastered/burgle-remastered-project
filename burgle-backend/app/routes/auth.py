@@ -1,14 +1,17 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, make_response, jsonify
 from flask_login import login_user, logout_user, login_required
 from app.models.users import User, db
 from flask_login import LoginManager, current_user
-
+from flask import session
+from flask_cors import cross_origin
+from datetime import timedelta
 
 auth_bp = Blueprint('auth', __name__)
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
 
 @auth_bp.route('/register', methods=['POST'])
+@cross_origin(methods=['POST'], supports_credentials=True, headers=['Content-Type', 'Authorization'], origin='http://127.0.0.1:5000')
 def register():
     data = request.get_json()
     #print("🤸 Received data:", data)
@@ -39,30 +42,39 @@ def register():
         return {"error": "Database error"}, 500
 
 
-@auth_bp.route('/login', methods=['GET', 'POST'])
+@auth_bp.route('/login', methods=[ 'POST'])
+@cross_origin(methods=['POST'], supports_credentials=True, headers=['Content-Type', 'Authorization'], origin='http://127.0.0.1:5000')
 def login():
     # {"username":"Madison", "email":"madisontolentino@gmail.com","password":"helloworld"}
-    if request.method == 'POST':
         data = request.get_json()
-        email = data.get('email')
+        username = data.get('username')
         password = data.get('password')
         #print(type(password))
 
-        user = User.query.filter_by(email=email).first()
-        #print(user)
+        user = User.query.filter_by(username=username).first()
+        #print(data,user)
         if user and user.check_password(password):
             login_user(user)
-            return {"message": "Login successful", "user_id": user.id}, 200
+            session['user_id'] = user.id
+            session.permanent = True 
+            session.permanent_session_lifetime = timedelta(days=7)
+            res =  jsonify({"message": "Login successful", "user_id": user.id}, 200)
+            res.set_cookie('session_id', str(user.id), httponly=True, samesite='Lax', path='/', secure=False) 
+            return res
         else:
-            return {"error": "Invalid credentials"}, 401
+            return jsonify({"error": "Invalid credentials"}, 401)
 
 
 
 @auth_bp.route('/logout')
+@cross_origin( supports_credentials=True, headers=['Content-Type', 'Authorization'], origin='http://127.0.0.1:5000')
 @login_required
 def logout():
+    session.pop('user_id', None)
     logout_user()
-    return {"message": "Logout successful"}, 200
+    res = make_response({"message": "Logout successful"}, 200)
+    res.set_cookie('session_id', '', expires=0)
+    return res
 
 @auth_bp.route('/user/<username>', methods=['GET'])
 def get_user(username):
@@ -77,6 +89,7 @@ def get_user(username):
     }, 200
 
 @auth_bp.route('/user/<username>', methods=['DELETE'])
+@cross_origin(methods=['DELETE'], supports_credentials=True, headers=['Content-Type', 'Authorization'], origin='http://127.0.0.1:5000')
 def delete_user(username):
     if not current_user.is_authenticated:
         return {"error": "User not authenticated"}, 401  # Unauthorized if the user is not logged in
@@ -97,6 +110,7 @@ def delete_user(username):
     }, 200
 
 @auth_bp.route('/user/<username>', methods=['PATCH'])
+@cross_origin(methods=['PATCH'], supports_credentials=True, headers=['Content-Type', 'Authorization'], origin='http://127.0.0.1:5000')
 def update_user(username):
     if not current_user.is_authenticated:
         return {"error": "User not authenticated"}, 401  # Unauthorized if the user is not logged in

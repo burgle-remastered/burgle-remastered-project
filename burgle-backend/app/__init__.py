@@ -31,25 +31,32 @@
 
 #     return app
 from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from app.extensions import db, migrate
 from app.models.users import bcrypt, User
 from app.models.burgers import Burger
 from flask_login import LoginManager
 from app.routes.auth import auth_bp
 from app.routes.burgerroutes import burger_bp
+from datetime import timedelta
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
+    CORS(app, supports_credentials=True,origins=["http://localhost:5173"])
     
     # Direct database configuration without dotenv for now
     app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres@localhost/burgle"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = 'burgers'
+    app.config['SESSION_COOKIE_NAME'] = 'burgl'
+    app.config['SESSION_COOKIE_HTTPONLY'] = True  # Ensures the cookie is not accessible via JavaScript
+    app.config['SESSION_COOKIE_SECURE'] = False  # Only send cookies over HTTPS (set to False for local dev without HTTPS)
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # Use Lax or Strict to restrict cross-site requests
     # Initialize extensions with the app
     db.init_app(app)
     migrate.init_app(app, db)
+
+    app.permanent_session_lifetime = timedelta(days=7)  
     
     login_manager = LoginManager(app)
     login_manager.login_view = "auth.login"
