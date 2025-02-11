@@ -3,11 +3,15 @@ import { useNavigate, Navigate } from "react-router-dom";
 // Madison has to make a log-user-in function using the adapters
 // import { logUserIn } from "../adapters/auth-adapter";
 import CurrentUserContext from "../contexts/current-user-context";
+import axios from 'axios'
+import Cookies from 'js-cookie'
 
 export default function LoginPage() {
     const navigate = useNavigate();
     const [errorText, setErrorText] = useState('');
     const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
+
+    axios.defaults.withCredentials = true
 
     // returns the user to their homepage 
     if (currentUser) return <Navigate to={`/users/${currentUser.id}`} />;
@@ -16,15 +20,25 @@ export default function LoginPage() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setErrorText('');
-        const formData = new FormData(event.target);
+        const formData = new FormData(event.target)
+        const formObject = Object.fromEntries(formData)
 
-        //   Madison needs to make the log user in function  for this
         //   const [user, error] = await logUserIn(Object.fromEntries(formData));
-        if (error) return setErrorText(error.message);
-        setCurrentUser(user);
-
+        try {
+            const response = await axios.post('http://127.0.0.1:5000/auth/login', formObject, {
+                withCredentials: true, headers: {
+                    'Content-Type': 'application/json', // Make sure it's set to JSON
+                  } // This ensures the session cookie is sent// This ensures the session cookie is sent
+              });
+            const user = response.data
+            Cookies.set('currentUser', JSON.stringify(user), { expires: 7 })
+            // console.log({user})
+            setCurrentUser(user)
+            navigate(`/users/${user.id}`);  // Navigate to user page
+          } catch (error) {
+            setErrorText(error.response?.data?.error || 'An error occurred during login.')
+          }
         //have to set the path for this one. Ask Zo or Carmen about how routes work here with navigate?
-        navigate(`/users/${user.id}`);
     };
 
     return (
