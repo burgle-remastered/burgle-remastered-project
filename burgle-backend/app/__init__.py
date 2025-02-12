@@ -42,7 +42,7 @@ from datetime import timedelta
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, supports_credentials=True,origins=["http://localhost:5173"])
+    CORS(app, supports_credentials=True,resources={r"*": {"origins": "http://localhost:5173"}},allow_headers=["Content-Type", "Authorization",'Access-Control-Allow-Methods','Access-Control-Allow-Headers','Access-Control-Allow-Origin'], methods=["PATCH", "OPTIONS",'POST','GET','DELETE'])
     
     # Direct database configuration without dotenv for now
     app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres@localhost/burgle"

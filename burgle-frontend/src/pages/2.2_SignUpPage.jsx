@@ -2,6 +2,8 @@ import { useContext, useState } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 //create current user context in a context folder 
 import CurrentUserContext from "../contexts/current-user-context";
+import axios from "axios"
+import Cookies from "js-cookie";
 // need adapters
 // import { createUser } from "../adapters/user-adapter";
 
@@ -24,25 +26,41 @@ export default function SignUp() {
     //   // the /users/:id page for that user, using the currentUser.id value
     //   if (currentUser) return <Navigate to={`/users/${currentUser.id}`} />;
 
-
     const handleSubmit = async (event) => {
         //preventing it from refreshing
         event.preventDefault();
         setErrorText('');
+        const formData = new FormData(event.target)
+        const formObject = Object.fromEntries(formData)
+        //if (!username || !password || !email) return setErrorText('Missing username or password');
 
-        if (!username || !password) return setErrorText('Missing username or password');
-
-        const [user, error] = await createUser({ username, password, name, email });
-        if (error) return setErrorText(error.message);
-
-        console.log(errorText)
-
+        try {
+            const userData = {
+                username: formObject.username,
+                email: formObject.email,
+                password: formObject.password
+            };
+                  
+            console.log("User to add:", userData)
+            const response = await axios.post('http://127.0.0.1:5000/auth/register', userData, {
+                withCredentials: true, headers: {
+                    'Content-Type': 'application/json', // Make sure it's set to JSON
+                  }
+            })
+            const user = response.data
+            Cookies.set('currentUser', JSON.stringify(user), { expires: 7 })
+            setCurrentUser(user)
+            setTimeout(() => {
+                const user = JSON.parse(Cookies.get('currentUser'))
+                navigate(`/users/${user.user_id}`);  // cookies weren't being set in time so we need to wait
+            }, 100);  
+        } catch(err){
+            console.log("Error:", err);
+            console.log("Error response:", err.response);
+            setErrorText(err.response?.data?.error || 'An error occurred during signup.')
+        }
         //setting the current user's information values to create their account and navigate them to their homepage
-        setCurrentUser(user);
         //set the values of the inputs back to empty
-
-
-        navigate(`/users/${user.id}`);
     };
 
     const handleChange = (event) => {

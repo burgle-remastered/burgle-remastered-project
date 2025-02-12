@@ -1,4 +1,4 @@
-from flask import Blueprint, request, make_response, jsonify
+from flask import Blueprint, request, make_response, jsonify, send_from_directory
 from flask_login import login_user, logout_user, login_required
 from app.models.users import User, db
 from flask_login import LoginManager, current_user
@@ -14,19 +14,25 @@ login_manager.login_view = "auth.login"
 @cross_origin(methods=['POST'], supports_credentials=True, headers=['Content-Type', 'Authorization'], origin='http://127.0.0.1:5000')
 def register():
     data = request.get_json()
-    #print("🤸 Received data:", data)
+    print("🤸 Received data:", data)
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
 
-    #print(f"🤸 Username: {username}, Email: {email}, Password: {password}")
+    print(f"🤸 Username: {username}, Email: {email}, Password: {password}")
 
     if not username or not email or not password:
         return {"error": "Username, email and password are required"}, 400
+    
 
-    existing_user = User.query.filter_by(email=email).first()
-    if existing_user:
+
+    existing_email = User.query.filter_by(email=email).first() 
+    existing_username = User.query.filter_by(username=username).first()
+    if existing_email:
         return {"error": "Email already registered"}, 400
+    
+    if existing_username:
+        return {"error": "Username already registered"}, 400
 
     new_user = User(username=username,email=email)
     new_user.set_password(password)
@@ -34,11 +40,11 @@ def register():
     try:
         db.session.add(new_user)
         db.session.commit()
-        #print("✅ User successfully added to database!") 
-        return {"message": "Registration successful"}, 201
+        print("✅ User successfully added to database!") 
+        return {"username": new_user.username, "email":new_user.email,"password":password,"user_id":new_user.id}, 201
     except Exception as e:
         db.session.rollback()  # Rollback in case of error
-        #print(f"❌ Database Commit Error: {e}")  
+        print(f"❌ Database Commit Error: {e}")  
         return {"error": "Database error"}, 500
 
 
@@ -67,9 +73,17 @@ def login():
 
 
 @auth_bp.route('/logout')
-@cross_origin( supports_credentials=True, headers=['Content-Type', 'Authorization'], origin='http://127.0.0.1:5000')
-@login_required
+@cross_origin( methods=['GET','OPTIONS'],supports_credentials=True, headers=['Content-Type', 'Authorization'], origin='http://127.0.0.1:5000')
 def logout():
+    if request.method == 'OPTIONS':
+        response = make_response('', 200)
+        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
+        response.headers['Access-Control-Allow-Methods'] = 'GET','OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+
+        print("OPTIONS Response Headers:", dict(response.headers))  # Print headers to confirm
+        return response
     session.pop('user_id', None)
     logout_user()
     res = make_response({"message": "Logout successful"}, 200)
@@ -88,18 +102,27 @@ def get_user(username):
         "email": user.email
     }, 200
 
-@auth_bp.route('/user/<username>', methods=['DELETE'])
-@cross_origin(methods=['DELETE'], supports_credentials=True, headers=['Content-Type', 'Authorization'], origin='http://127.0.0.1:5000')
-def delete_user(username):
-    if not current_user.is_authenticated:
-        return {"error": "User not authenticated"}, 401  # Unauthorized if the user is not logged in
+@auth_bp.route('/user/del/<int:user_id>', methods=['DELETE'])
+@cross_origin(methods=['DELETE'], supports_credentials=True, origin='http://127.0.0.1:5000')
+def delete_user(user_id):
+    # {"username":"tester","email":"tester@gmail.com","password":"tester"}
+    if request.method == 'OPTIONS':
+        response = make_response('', 200)
+        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
+        response.headers['Access-Control-Allow-Methods'] = 'DELETE'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
 
-    user = current_user
+        print("OPTIONS Response Headers:", dict(response.headers))  # Print headers to confirm
+        return response
+   
+    user = User.query.get(user_id)
+
     if request.method == 'DELETE':
         try:
             db.session.delete(user)
             db.session.commit()
-            return {"message": f"User '{username}' successfully deleted"}, 200
+            return {"message": f"User '{user.username}' successfully deleted"}, 200
         except Exception as e:
             db.session.rollback()
             return {"error": f"Failed to delete user {e}"}, 500
@@ -109,15 +132,29 @@ def delete_user(username):
         "email": user.email
     }, 200
 
-@auth_bp.route('/user/<username>', methods=['PATCH'])
-@cross_origin(methods=['PATCH'], supports_credentials=True, headers=['Content-Type', 'Authorization'], origin='http://127.0.0.1:5000')
-def update_user(username):
-    if not current_user.is_authenticated:
-        return {"error": "User not authenticated"}, 401  # Unauthorized if the user is not logged in
+@auth_bp.route('/user/<int:user_id>', methods=['PATCH','OPTIONS'])
+@cross_origin(methods=['PATCH','OPTIONS'], supports_credentials=True, origin='http://127.0.0.1:5000')
+def update_user(user_id):
+    if request.method == 'OPTIONS':
+        response = make_response('', 200)
+        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
+        response.headers['Access-Control-Allow-Methods'] = 'PATCH, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
 
-    user = current_user
+        print("OPTIONS Response Headers:", dict(response.headers))  # Print headers to confirm
+        return response
 
-    data = request.get_json()
+    data = request.json
+
+    if not data:
+        return jsonify({'error': 'No data provided'}), 400
+
+    user = User.query.get(user_id)
+
+    if not user:
+        return {"error": "Invalid session"}, 401
+
     new_username = data.get('username')
     new_email = data.get('email')
     new_password = data.get('password')
@@ -134,7 +171,7 @@ def update_user(username):
 
     try:
         db.session.commit()
-        return {"message": f"User '{username}' updated successfully"}, 200
+        return {"message": f"User '{user.username}' updated successfully"}, 200
     except Exception as e:
         db.session.rollback()
         return {"error": f"Failed to update user {e}"}, 500

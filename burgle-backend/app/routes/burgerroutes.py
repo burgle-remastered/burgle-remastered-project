@@ -10,6 +10,7 @@ burger_bp = Blueprint('burger', __name__)
 @burger_bp.route('/all', methods = ['POST','GET'])
 @cross_origin(methods=['POST','GET'], supports_credentials=True, origin='http://127.0.0.1:5000')
 def get_all_burgers():
+  
   data = request.json
   user_data = data.get('body').get('user')
   
@@ -166,7 +167,7 @@ def get_burger(burger_id):
     "user_id": burger.user_id
   }
 
-@burger_bp.route('/<int:burger_id>', methods=['DELETE'])
+@burger_bp.route('/del/<int:burger_id>', methods=['DELETE'])
 @cross_origin(methods=['DELETE'], supports_credentials=True, origin='http://127.0.0.1:5000')
 def delete_burger(burger_id):
     if not current_user.is_authenticated:
