@@ -2,6 +2,8 @@ import { useContext, useState } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 //create current user context in a context folder 
 import CurrentUserContext from "../contexts/current-user-context";
+import axios from "axios"
+import Cookies from "js-cookie";
 // need adapters
 // import { createUser } from "../adapters/user-adapter";
 
@@ -24,7 +26,6 @@ export default function SignUp() {
     //   // the /users/:id page for that user, using the currentUser.id value
     //   if (currentUser) return <Navigate to={`/users/${currentUser.id}`} />;
 
-    //doesnt exactly work, gotta add sign out first to properly test it
     const handleSubmit = async (event) => {
         //preventing it from refreshing
         event.preventDefault();
@@ -47,14 +48,15 @@ export default function SignUp() {
                   }
             })
             const user = response.data
-            console.log(user)
             Cookies.set('currentUser', JSON.stringify(user), { expires: 7 })
             setCurrentUser(user)
-        
             setTimeout(() => {
+                const user = JSON.parse(Cookies.get('currentUser'))
                 navigate(`/users/${user.user_id}`);  // cookies weren't being set in time so we need to wait
             }, 100);  
         } catch(err){
+            console.log("Error:", err);
+            console.log("Error response:", err.response);
             setErrorText(err.response?.data?.error || 'An error occurred during signup.')
         }
         //setting the current user's information values to create their account and navigate them to their homepage

@@ -14,19 +14,25 @@ login_manager.login_view = "auth.login"
 @cross_origin(methods=['POST'], supports_credentials=True, headers=['Content-Type', 'Authorization'], origin='http://127.0.0.1:5000')
 def register():
     data = request.get_json()
-    #print("🤸 Received data:", data)
+    print("🤸 Received data:", data)
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
 
-    #print(f"🤸 Username: {username}, Email: {email}, Password: {password}")
+    print(f"🤸 Username: {username}, Email: {email}, Password: {password}")
 
     if not username or not email or not password:
         return {"error": "Username, email and password are required"}, 400
+    
 
-    existing_user = User.query.filter_by(email=email).first()
-    if existing_user:
+
+    existing_email = User.query.filter_by(email=email).first() 
+    existing_username = User.query.filter_by(username=username).first()
+    if existing_email:
         return {"error": "Email already registered"}, 400
+    
+    if existing_username:
+        return {"error": "Username already registered"}, 400
 
     new_user = User(username=username,email=email)
     new_user.set_password(password)
@@ -34,11 +40,11 @@ def register():
     try:
         db.session.add(new_user)
         db.session.commit()
-        #print("✅ User successfully added to database!") 
-        return {"message": "Registration successful"}, 201
+        print("✅ User successfully added to database!") 
+        return {"username": new_user.username, "email":new_user.email,"password":password,"user_id":new_user.id}, 201
     except Exception as e:
         db.session.rollback()  # Rollback in case of error
-        #print(f"❌ Database Commit Error: {e}")  
+        print(f"❌ Database Commit Error: {e}")  
         return {"error": "Database error"}, 500
 
 
@@ -67,9 +73,17 @@ def login():
 
 
 @auth_bp.route('/logout')
-@cross_origin( supports_credentials=True, headers=['Content-Type', 'Authorization'], origin='http://127.0.0.1:5000')
-@login_required
+@cross_origin( methods=['GET','OPTIONS'],supports_credentials=True, headers=['Content-Type', 'Authorization'], origin='http://127.0.0.1:5000')
 def logout():
+    if request.method == 'OPTIONS':
+        response = make_response('', 200)
+        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
+        response.headers['Access-Control-Allow-Methods'] = 'GET','OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+
+        print("OPTIONS Response Headers:", dict(response.headers))  # Print headers to confirm
+        return response
     session.pop('user_id', None)
     logout_user()
     res = make_response({"message": "Logout successful"}, 200)
