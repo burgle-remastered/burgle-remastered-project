@@ -10,6 +10,7 @@ burger_bp = Blueprint('burger', __name__)
 @burger_bp.route('/all', methods = ['POST','GET'])
 @cross_origin(methods=['POST','GET'], supports_credentials=True, origin='http://127.0.0.1:5000')
 def get_all_burgers():
+  
   data = request.json
   user_data = data.get('body').get('user')
   

@@ -98,7 +98,8 @@
 //     )
 // }
 
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 import CurrentUserContext from "../contexts/current-user-context";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -107,7 +108,7 @@ export default function AccountPage() {
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const [burgers, setBurgers] = useState([]);
   const [error, setError] = useState(null);
-
+  const navigate = useNavigate()
   axios.defaults.withCredentials = true;
 
   const user = Cookies.get("currentUser");
@@ -181,17 +182,20 @@ export default function AccountPage() {
     try {
       const user = JSON.parse(Cookies.get('currentUser')) 
       const response = await axios.delete(
-        `http://127.0.0.1:5000/auth/${user.username}`,
+        `http://127.0.0.1:5000/auth/user/del/${user[0].user_id}`,
         {
           withCredentials: true,
           headers: {
-            "Content-Type": "application/json", // We're sending JSON here
-          },
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": `http://127.0.0.1:5000/auth/user/del/${user[0].user_id}`,
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+          }
         }
       );
       setCurrentUser(null);
       Cookies.remove("currentUser");
       console.log("Account deleted:", response.data);
+      navigate(`/`)
     } catch (err) {
       console.error("Failed to delete account:", err.message);
     }

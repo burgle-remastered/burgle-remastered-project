@@ -90,16 +90,25 @@ def get_user(username):
 
 @auth_bp.route('/user/del/<int:user_id>', methods=['DELETE'])
 @cross_origin(methods=['DELETE'], supports_credentials=True, origin='http://127.0.0.1:5000')
-def delete_user(username):
-    if not current_user.is_authenticated:
-        return {"error": "User not authenticated"}, 401  # Unauthorized if the user is not logged in
+def delete_user(user_id):
+    # {"username":"tester","email":"tester@gmail.com","password":"tester"}
+    if request.method == 'OPTIONS':
+        response = make_response('', 200)
+        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
+        response.headers['Access-Control-Allow-Methods'] = 'DELETE'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
 
-    user = current_user
+        print("OPTIONS Response Headers:", dict(response.headers))  # Print headers to confirm
+        return response
+   
+    user = User.query.get(user_id)
+
     if request.method == 'DELETE':
         try:
             db.session.delete(user)
             db.session.commit()
-            return {"message": f"User '{username}' successfully deleted"}, 200
+            return {"message": f"User '{user.username}' successfully deleted"}, 200
         except Exception as e:
             db.session.rollback()
             return {"error": f"Failed to delete user {e}"}, 500
