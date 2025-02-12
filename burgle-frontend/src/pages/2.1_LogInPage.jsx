@@ -22,7 +22,13 @@ export default function LoginPage() {
         setErrorText('');
         const formData = new FormData(event.target)
         const formObject = Object.fromEntries(formData)
-
+        const existingUser = Cookies.get('currentUser')
+        console.log(existingUser)
+        if(existingUser){
+            setTimeout(()=>{
+                 navigate(`/users/${existingUser[0].user_id}`)
+            },100) 
+        }
         //   const [user, error] = await logUserIn(Object.fromEntries(formData));
         try {
             const response = await axios.post('http://127.0.0.1:5000/auth/login', formObject, {
@@ -35,7 +41,7 @@ export default function LoginPage() {
             setCurrentUser(user)
             // console.log(user[0].user_id)
             setTimeout(() => {
-                navigate(`/users/${user[0].user_id}`);  // cookies weren't being set in time so we need to wait
+                navigate(`/`);  // cookies weren't being set in time so we need to wait
               }, 100); 
             ;  // Navigate to user page // 3: number
           } catch (error) {

@@ -112,7 +112,6 @@ export default function AccountPage() {
   axios.defaults.withCredentials = true;
 
   const user = Cookies.get("currentUser");
-  console.log(user);
 
   useEffect(() => {
     const savedUser = Cookies.get("currentUser");
@@ -148,8 +147,7 @@ export default function AccountPage() {
     setError('');
     const formData = new FormData(event.target)
     const formObject = Object.fromEntries(formData)
-    // console.log(formData)
-    // console.log(formObject)
+
     try {
       const user = JSON.parse(Cookies.get('currentUser')) 
       const userData = {
@@ -158,9 +156,6 @@ export default function AccountPage() {
         email: formObject.email || user.email,
         password: formObject.password || user.password
       };
-      // console.log(user)
-      
-      console.log("User to update:", userData)
       const response = await axios.patch(
         `http://127.0.0.1:5000/auth/user/${userData.user_id}`, userData,
         {
@@ -227,6 +222,7 @@ export default function AccountPage() {
   return (
     <>
       <div>
+      <button onClick={()=>navigate('/')}>Back</button>
         <h1>All Burgers</h1>
         <ul>
           {error && <p>Error loading burgers: {error}</p>}

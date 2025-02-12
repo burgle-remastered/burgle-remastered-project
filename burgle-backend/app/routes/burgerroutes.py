@@ -32,12 +32,23 @@ def get_all_burgers():
 @burger_bp.route('/<string:date>', methods = ['GET'])
 @cross_origin(methods=['GET'], supports_credentials=True, origin='http://127.0.0.1:5000')
 def get_burger_by_date(date):
-  if not current_user.is_authenticated:
-    return {"error": "User not authenticated"}, 401  # Unauthorized if the user is not logged in
+  print(date)
+  data = request.json
+  user_data = data.get('body').get('user')
+  
+  if not user_data:
+        return jsonify({'error': 'Unauthorized'}), 401
+  print(user_data)
+  user = User.query.get(user_data) 
 
-  user = current_user
+  if not user:
+    return {"error": "Invalid session"}, 401
+  
   burger = Burger.query.filter_by(user_id=user.id, created_at=date).first() 
-  return {
+
+  if not burger:
+    return jsonify({'error': 'Burger not found for this date'}), 404
+  return jsonify({
     "id": burger.id,
     "top_bun": burger.top_bun,
     "meat": burger.meat,
@@ -51,20 +62,21 @@ def get_burger_by_date(date):
     "created_at": burger.created_at.strftime("%Y-%m-%d"),
     "is_template": burger.is_template or None,
     "user_id": burger.user_id
-  }
+  })
 
 @burger_bp.route('/', methods = ['POST'])
 def create_burger():
   # {"top_bun": "wakeup", "meat": "go to marcy", "cheese": "eat lunch", "sauce":"journal", "bottom_bun": "sleep", "spoon_count": 20}
-  data = request.get_json()
-  # print(data)
-  if not current_user.is_authenticated:
-    return {"error": "User not authenticated"}, 401  
+  data = request.json
+  user_data = data.get('user_id')
+  
+  if not user_data:
+        return jsonify({'error': 'Unauthorized'}), 401
 
-  user = current_user  
+  user = User.query.get(user_data) 
 
   if not user:
-    return {"error": "User not found"}, 404
+    return {"error": "Invalid session"}, 401
   
   existing_burger = Burger.query.filter_by(created_at=date.today()).first() #premake tmrws burger (stretch)
 
@@ -86,7 +98,17 @@ def create_burger():
     db.session.add(new_burger)
     db.session.commit()
     print("✅ Burger successfully added to database!") 
-    return {"message": "Burger created successfully"}, 201
+    return {
+    "id": new_burger.id,
+    "top_bun": new_burger.top_bun,
+    "meat": new_burger.meat,
+    "cheese": new_burger.cheese,
+    "sauce": new_burger.sauce,
+    "bottom_bun": new_burger.bottom_bun,
+    "spoon_count": new_burger.spoon_count,
+    "created_at": new_burger.created_at.strftime("%Y-%m-%d"),
+    "user_id": new_burger.user_id
+  }, 201
   except Exception as e:
     db.session.rollback()  # Rollback in case of error
     print(f"❌ Database Commit Error: {e}")  
