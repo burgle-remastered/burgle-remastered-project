@@ -29,16 +29,15 @@ def get_all_burgers():
   return jsonify({'burgers': burgers_dict})
 
 
-@burger_bp.route('/<string:date>', methods = ['GET'])
-@cross_origin(methods=['GET'], supports_credentials=True, origin='http://127.0.0.1:5000')
+@burger_bp.route('/<string:date>', methods = ['POST','GET'])
+@cross_origin(methods=['POST','GET'], supports_credentials=True, origin='http://127.0.0.1:5000')
 def get_burger_by_date(date):
-  print(date)
   data = request.json
   user_data = data.get('body').get('user')
   
   if not user_data:
         return jsonify({'error': 'Unauthorized'}), 401
-  print(user_data)
+
   user = User.query.get(user_data) 
 
   if not user:
@@ -48,6 +47,7 @@ def get_burger_by_date(date):
 
   if not burger:
     return jsonify({'error': 'Burger not found for this date'}), 404
+  
   return jsonify({
     "id": burger.id,
     "top_bun": burger.top_bun,
@@ -117,13 +117,24 @@ def create_burger():
 @burger_bp.route('/<int:burger_id>', methods = ['PATCH'])
 @cross_origin(methods=['PATCH'], supports_credentials=True, origin='http://127.0.0.1:5000')
 def update_burger(burger_id):
-  data = request.get_json()
-  if not current_user.is_authenticated:
-    return {"error": "User not authenticated"}, 401  
+  data = request.json
+  print(data)
+  user_data = data.get('user_id')
+  
+  if not user_data:
+        return jsonify({'error': 'Unauthorized'}), 401
 
-  user = current_user 
+  user = User.query.get(user_data) 
 
-  burger = Burger.query.filter_by(id=burger_id, user_id=user.id).first() 
+  if not user:
+    return {"error": "Invalid session"}, 401
+  
+  burger_data = data.get("burger_id")
+
+  burger = Burger.query.filter_by(id=burger_data, user_id=user.id).first() 
+
+  if not burger:
+    return {"error": "No Burger"}, 404
 
   pickles = data.get('pickles')
   lettuce = data.get('lettuce')
@@ -160,7 +171,21 @@ def update_burger(burger_id):
 
   try:
     db.session.commit()
-    return {"message": f"{user.username}'s burger updated successfully"}, 200
+    return {
+    "id": burger.id,
+    "top_bun": burger.top_bun,
+    "meat": burger.meat,
+    "cheese": burger.cheese,
+    "sauce": burger.sauce,
+    "pickles": burger.pickles or None,
+    "lettuce": burger.lettuce or None,
+    "tomato": burger.tomato or None,
+    "bottom_bun": burger.bottom_bun,
+    "spoon_count": burger.spoon_count,
+    "created_at": burger.created_at.strftime("%Y-%m-%d"),
+    "is_template": burger.is_template or None,
+    "user_id": burger.user_id
+  }, 200
   except Exception as e:
     db.session.rollback()
     return {"error": f"Failed to update burger {e}"}, 500

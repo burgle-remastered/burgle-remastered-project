@@ -35,7 +35,7 @@ function App() {
           <Route path='/signup' element={<SignUp />} />
           <Route path='/users/:id' element={<AccountPage />} />
           <Route path='/users/:id/kitchen' element={<Kitchen />} />
-          <Route path='/users/:id/:burgerid' element={<IngredientTaskList />} />
+          <Route path='/users/:id/:burgerid/:component' element={<IngredientTaskList />} />
         </Routes>
       </main>
 
