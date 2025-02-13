@@ -42,19 +42,19 @@ export default function Kitchen() {
             const date = getDate()
             const user = JSON.parse(Cookies.get('currentUser')) 
             console.log(user[0].user_id)  // This will give you the data directly
-            const response = await axios.get(`http://127.0.0.1:5000/burger/${date}`,{
+            const response = await axios.post(`http://127.0.0.1:5000/burger/${date}`,{
               withCredentials: true,
               headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json", // We're telling the server we expect JSON
               },  body: {user: user[0].user_id}
             });
-            setBurger(response.data.burgers); // Assuming the response contains `burgers` data
+            console.log(response.data)
+            setBurger(response.data); // Assuming the response contains `burgers` data
           } catch (err) {
             setError(err.message);
           }
         };
-        console.log({burger})
         fetchBurger();
       }, []);
 
@@ -89,18 +89,37 @@ export default function Kitchen() {
 
     const handleUpdateBurger = async (component,value) => {
         try {
-            const updatedData = { [component]: value };
+            const user = JSON.parse(Cookies.get('currentUser')) 
+            const updatedData = { burger_id:burger.id,user_id:user[0].user_id,[component]: value };
             const response = await axios.patch(`http://127.0.0.1:5000/burger/${burger.id}`, updatedData, {
                 withCredentials: true,
                 headers: { 'Content-Type': 'application/json' }
             });
-    
+            console.log(response.data)
             setBurger(response.data); // Update the burger state with the new data
         } catch (error) {
             setError('Failed to update burger');
         }
     };
 
+    const handleOpen = async (component,value) => {
+        navigate(`/users/${burger.user_id}/${burger.id}/${component}`)
+    }
+
+    const handleTemplate = async () => {
+        try {
+            const user = JSON.parse(Cookies.get('currentUser')) 
+            const updatedData = { burger_id:burger.id,user_id:user[0].user_id, is_template: true};
+            const response = await axios.patch(`http://127.0.0.1:5000/burger/${burger.id}`, updatedData, {
+                withCredentials: true,
+                headers: { 'Content-Type': 'application/json' }
+            });
+            console.log(response.data)
+            setBurger(response.data); // Update the burger state with the new data
+        } catch (error) {
+            setError('Failed to update burger');
+        }
+    }
     
 
     return (
@@ -110,16 +129,26 @@ export default function Kitchen() {
             {burger && (
                 <div className="burgerDetails">
                     <h3>Your Burger</h3>
-                    <p>Top Bun: {burger.top_bun}</p>
-                    <p>Meat: {burger.meat}</p>
-                    <p>Cheese: {burger.cheese}</p>
-                    <p>Sauce: {burger.sauce}</p>
-                    <p>Bottom Bun: {burger.bottom_bun}</p>
-                    <p>Spoon Count: {burger.spoon_count}</p>
+                    <button onClick={()=>handleOpen("top_bun",burger.top_bun)} >Top Bun: {burger.top_bun}</button>
+                    <button onClick={()=>handleOpen("meat",burger.meat)} >Meat: {burger.meat}</button>
+                    <button onClick={()=>handleOpen("cheese",burger.cheese)} >Cheese: {burger.cheese}</button>
+                    <button onClick={()=>handleOpen("sauce",burger.sauce)} >Sauce: {burger.sauce}</button>
+                    {burger.pickles && (
+                        <button onClick={()=>handleOpen("pickles",burger.pickles)} >Pickles: {burger.pickles}</button>
+                    )}
+                    {burger.lettuce && (
+                        <button onClick={()=>handleOpen("lettuce",burger.lettuce)} >Lettuce: {burger.lettuce}</button>
+                    )}
+                    {burger.tomato && (
+                        <button onClick={()=>handleOpen("tomato",burger.tomato)} >Tomato: {burger.tomato}</button>
+                    )}
+                    <button onClick={()=>handleOpen("bottom_bun",burger.bottom_bun)} >Bottom Bun: {burger.bottom_bun}</button>
+                    <button >Spoon Count: {burger.spoon_count}</button>
 
                     <button onClick={() => setBurger(null)}>Modify Your Burger</button>
                 </div>
             )}
+            <button onClick={()=>handleTemplate()}>Add as template</button>
             <div className="burgerForm">
                 <form onSubmit={handleSubmit} aria-labelledby="burger-heading">
                     <h2 id="burger-heading" className="header2">
