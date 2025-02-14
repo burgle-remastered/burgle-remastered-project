@@ -1,12 +1,8 @@
 import { useContext, useState } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
-//create current user context in a context folder 
 import CurrentUserContext from "../contexts/current-user-context";
 import axios from "axios"
 import Cookies from "js-cookie";
-// need adapters
-// import { createUser } from "../adapters/user-adapter";
-
 
 // Controlling the sign up form is a good idea because we want to add (eventually)
 // more validation and provide real time feedback to the user about usernames and passwords
@@ -20,7 +16,6 @@ export default function SignUp() {
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
 
-
     //   // users shouldn't be able to see the sign up page if they are already logged in.
     //   // if the currentUser exists in the context, navigate the user to 
     //   // the /users/:id page for that user, using the currentUser.id value
@@ -32,7 +27,6 @@ export default function SignUp() {
         setErrorText('');
         const formData = new FormData(event.target)
         const formObject = Object.fromEntries(formData)
-        //if (!username || !password || !email) return setErrorText('Missing username or password');
 
         try {
             const userData = {
@@ -59,8 +53,6 @@ export default function SignUp() {
             console.log("Error response:", err.response);
             setErrorText(err.response?.data?.error || 'An error occurred during signup.')
         }
-        //setting the current user's information values to create their account and navigate them to their homepage
-        //set the values of the inputs back to empty
     };
 
     const handleChange = (event) => {
@@ -69,8 +61,6 @@ export default function SignUp() {
         if (name === 'username') setUsername(value);
         if (name === 'password') setPassword(value);
         if (name === 'email') setEmail(value);
-
-
     };
 
     return (

@@ -16,24 +16,24 @@ export default function Kitchen() {
     const [pickles, setPickles] = useState('');
     const [lettuce, setLettuce] = useState('');
     const [tomato, setTomato] = useState('');
-    const [burger, setBurger] = useState({
-        top_bun: "",
-        meat: "",
-        cheese: "",
-        sauce: "",
-        bottom_bun: "",
-        spoon_count: "",
-        additional_components: []
-    });
+    const [burger, setBurger] = useState(null);
+    const [templateBurgers, setTemplateBurgers] = useState([]);
     const [error, setError] = useState(null);
     const navigate = useNavigate()
     axios.defaults.withCredentials = true;
+
+     useEffect(() => {
+            const savedUser = Cookies.get("currentUser");
+            if (savedUser) {
+              setCurrentUser(JSON.parse(savedUser));
+            }
+          }, []);
+
     const getDate = () => {
         const today = new Date();
         const month = today.getMonth() + 1;
         const year = today.getFullYear();
         const date = today.getDate();
-        console.log(`${year}-${month}-${date}`)
         return `${year}-${month}-${date}`;
       }
     useEffect(() => {
@@ -41,7 +41,6 @@ export default function Kitchen() {
           try {
             const date = getDate()
             const user = JSON.parse(Cookies.get('currentUser')) 
-            console.log(user[0].user_id)  // This will give you the data directly
             const response = await axios.post(`http://127.0.0.1:5000/burger/${date}`,{
               withCredentials: true,
               headers: {
@@ -49,13 +48,32 @@ export default function Kitchen() {
                 Accept: "application/json", // We're telling the server we expect JSON
               },  body: {user: user[0].user_id}
             });
-            console.log(response.data)
-            setBurger(response.data); // Assuming the response contains `burgers` data
+            setBurger(response.data)
           } catch (err) {
             setError(err.message);
           }
         };
         fetchBurger();
+      }, []);
+
+      useEffect(() => {
+        const fetchTemplateBurgers = async () => {
+          try {
+            const user = JSON.parse(Cookies.get('currentUser')) 
+            const response = await axios.post("http://127.0.0.1:5000/burger/template", {
+              withCredentials: true,
+              headers: {
+                Accept: "application/json",
+              },
+              body: {user: user[0].user_id}
+              ,
+            });
+            setTemplateBurgers(response.data.burgers)
+          } catch (err) {
+            setError(err.message);
+          }
+        };
+        fetchTemplateBurgers();
       }, []);
 
     const handleSubmit = async (event) => {
@@ -94,8 +112,7 @@ export default function Kitchen() {
             const response = await axios.patch(`http://127.0.0.1:5000/burger/${burger.id}`, updatedData, {
                 withCredentials: true,
                 headers: { 'Content-Type': 'application/json' }
-            });
-            console.log(response.data)
+            })
             setBurger(response.data); // Update the burger state with the new data
         } catch (error) {
             setError('Failed to update burger');
@@ -113,9 +130,8 @@ export default function Kitchen() {
             const response = await axios.patch(`http://127.0.0.1:5000/burger/${burger.id}`, updatedData, {
                 withCredentials: true,
                 headers: { 'Content-Type': 'application/json' }
-            });
-            console.log(response.data)
-            setBurger(response.data); // Update the burger state with the new data
+            })
+            setTemplateBurgers((prevBurgers) => [...prevBurgers, response.data]) // Update the burger state with the new data
         } catch (error) {
             setError('Failed to update burger');
         }
@@ -124,7 +140,28 @@ export default function Kitchen() {
 
     return (
         <>
-            <h2> Kitchen </h2>
+            <h2> Kitchen</h2>
+            <h3>Menu</h3>
+        <ul>
+          {error && <p>{error}</p>}
+          
+          {templateBurgers.length > 0 ? (
+            templateBurgers.map((burger) => <li key={burger.id}>{
+                <div>
+                    <ul>{burger.top_bun}</ul>
+                    <ul>{burger.meat}</ul>
+                    <ul>{burger.cheese}</ul>
+                    <ul>{burger.sauce}</ul>
+                    <ul>{burger.pickles}</ul>
+                    <ul>{burger.lettuce}</ul>
+                    <ul>{burger.tomato}</ul>
+                    <ul>{burger.bottom_bun}</ul>
+                </div>
+                }</li>)
+          ) : (
+            <p>No burgers found</p>
+          )}
+        </ul>
             <button onClick={()=>navigate('/')}>Back</button>
             {burger && (
                 <div className="burgerDetails">
@@ -145,11 +182,12 @@ export default function Kitchen() {
                     <button onClick={()=>handleOpen("bottom_bun",burger.bottom_bun)} >Bottom Bun: {burger.bottom_bun}</button>
                     <button >Spoon Count: {burger.spoon_count}</button>
 
-                    <button onClick={() => setBurger(null)}>Modify Your Burger</button>
                 </div>
             )}
             <button onClick={()=>handleTemplate()}>Add as template</button>
+            
             <div className="burgerForm">
+                {!burger && (
                 <form onSubmit={handleSubmit} aria-labelledby="burger-heading">
                     <h2 id="burger-heading" className="header2">
                         Welcome Back to the Kitchen, Toots!
@@ -218,12 +256,13 @@ export default function Kitchen() {
                     </div>
                     <button>Create Burger!</button>
                 </form>
+            )}
                 {/* Dynamic form for additional components */}
                 <div className="additionalComponents">
-                        <h3>Add Extra Components</h3>
-
-                        {/* Input and button for pickles */}
-                        <div className="picklesBlock">
+                        {burger && (<div>
+                            <h3>Add Extra Components</h3>
+                            {!burger.pickles && (
+                                <div className="picklesBlock">
                             <label htmlFor="pickles">Pickles</label>
                             <input
                                 type="text"
@@ -236,10 +275,10 @@ export default function Kitchen() {
                                 Add Pickles
                             </button>
                         </div>
-
-                        {/* Input and button for lettuce */}
-                        {burger && (<div>
-                            <div className="lettuceBlock">
+                            )}
+                            {!burger.lettuce && (
+                                <div>
+                                   <div className="lettuceBlock">
                             <label htmlFor="lettuce">Lettuce</label>
                             <input
                                 type="text"
@@ -250,11 +289,13 @@ export default function Kitchen() {
                             />
                             <button type="button" onClick={() => handleUpdateBurger('lettuce', lettuce)}>
                                 Add Lettuce
-                            </button>
+                            </button> 
+                            </div>  
                         </div>
-
-                        {/* Input and button for tomato */}
-                        <div className="tomatoBlock">
+                            )
+                            }
+                            {!burger.tomato && (
+                                 <div className="tomatoBlock">
                             <label htmlFor="tomato">Tomato</label>
                             <input
                                 type="text"
@@ -267,6 +308,7 @@ export default function Kitchen() {
                                 Add Tomato
                             </button>
                         </div>
+                            )} 
                     </div>
                     )}
                 </div>
