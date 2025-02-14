@@ -25,6 +25,28 @@ def get_all_burgers():
   
   
   burgers = Burger.query.filter_by(user_id=user.id).all() 
+
+  burgers_dict = [burger.to_dict() for burger in burgers]
+  return jsonify({'burgers': burgers_dict})
+
+@burger_bp.route('/template', methods = ['POST','GET'])
+@cross_origin(methods=['POST','GET'], supports_credentials=True, origin='http://127.0.0.1:5000')
+def get_all_templates():
+  
+  data = request.json
+  user_data = data.get('body').get('user')
+  
+  if not user_data:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+  
+  user = User.query.get(user_data) 
+
+  if not user:
+    return {"error": "Invalid session"}, 401
+  
+  
+  burgers = Burger.query.filter_by(user_id=user.id,is_template=True).all() 
   burgers_dict = [burger.to_dict() for burger in burgers]
   return jsonify({'burgers': burgers_dict})
 
@@ -32,6 +54,7 @@ def get_all_burgers():
 @burger_bp.route('/<string:date>', methods = ['POST','GET'])
 @cross_origin(methods=['POST','GET'], supports_credentials=True, origin='http://127.0.0.1:5000')
 def get_burger_by_date(date):
+  #{"body":{"user":"24"}}
   data = request.json
   user_data = data.get('body').get('user')
   
@@ -68,7 +91,9 @@ def get_burger_by_date(date):
 def create_burger():
   # {"top_bun": "wakeup", "meat": "go to marcy", "cheese": "eat lunch", "sauce":"journal", "bottom_bun": "sleep", "spoon_count": 20}
   data = request.json
+  print(data)
   user_data = data.get('user_id')
+  print(user_data)
   
   if not user_data:
         return jsonify({'error': 'Unauthorized'}), 401
@@ -78,7 +103,7 @@ def create_burger():
   if not user:
     return {"error": "Invalid session"}, 401
   
-  existing_burger = Burger.query.filter_by(created_at=date.today()).first() #premake tmrws burger (stretch)
+  existing_burger = Burger.query.filter_by(user_id=user.id,created_at=date.today()).first() #premake tmrws burger (stretch)
 
   if existing_burger:
     return {"error": "Burger already created today"}, 404
@@ -135,11 +160,16 @@ def update_burger(burger_id):
 
   if not burger:
     return {"error": "No Burger"}, 404
+  
+  
 
   pickles = data.get('pickles')
   lettuce = data.get('lettuce')
   tomato = data.get('tomato')
   is_template = data.get('is_template')
+
+  if burger.is_template and is_template:
+     return {"error": "Already Template"}, 404
 
   new_top_bun = data.get('top_bun')
   new_meat = data.get('meat')

@@ -1,103 +1,3 @@
-// import { useState,useContext,useEffect } from "react"
-// import CurrentUserContext from "../contexts/current-user-context"
-// import axios from 'axios'
-// import Cookies from 'js-cookie'
-
-
-// export default function AccountPage() {
-//   const { currentUser, setCurrentUser } = useContext(CurrentUserContext)
-//   const [burgers, setBurgers] = useState([])
-//   const [error, setError] = useState(null)
-
-//   axios.defaults.withCredentials = true
-
-//   const user = Cookies.get('currentUser')
-//   console.log(user) 
-//   useEffect(() => {
-//     const savedUser = Cookies.get('currentUser');
-//     console.log(savedUser)
-//     if (savedUser) {
-//       setCurrentUser(JSON.parse(savedUser));
-//     }
-//   }, []);
-
-//   useEffect(() => {
-//     const fetchBurgers = async () => {
-//       try {
-//         const response = await axios.get('http://127.0.0.1:5000/burger/all',  {
-          
-//           withCredentials: true, 
-//           headers: {
-//             'Content-type':'application/json',
-//             'Accept': 'application/json', // Make sure it's set to JSON
-//           } // This ensures the session cookie is sent
-//         }); console.log(response)
-//   //       .then(response => console.log(response.data))
-//   // .catch(error => console.error('Error:', error));
-//         let data = response.json()
-//         console.log(data.data.burgers)
-//         setBurgers(data.data.burgers)
-//       } catch (err) {
-//         setError(err.message)
-//       }
-//     }
-    
-//     fetchBurgers()
-//   }, [])
-
-//   const handleUpdate = async (currentUser) => {
-//     // since its a button it doesnt have to be in useEffect()
-//     try {
-//       const response = await axios.patch(`http://127.0.0.1:5000/auth/${currentUser.username}`,{
-//         withCredentials: true, headers: {
-//           'Content-Type': 'application/json', // Make sure it's set to JSON
-//         }// This ensures the session cookie is sent
-//       });
-//       console.log("Account updated:", response.data)
-//     } catch (err) {
-//       console.error("Failed to update account:", err.message)
-//     }
-   
-//   }
-
-//   const handleDelete = async (currentUser) => {
-//     try {
-//       const response = await axios.delete(`http://127.0.0.1:5000/auth/${currentUser.username}`,{
-//         withCredentials: true, headers: {
-//           'Content-Type': 'application/json', // Make sure it's set to JSON
-//         }// This ensures the session cookie is sent
-//       });
-//       setCurrentUser(null);
-//       Cookies.remove("currentUser");
-//       console.log("Account deleted:", response.data)
-//     } catch (err) {
-//       console.error("Failed to delete account:", err.message)
-//     }
-//   }
-
-//   return (
-//   <>
-//      <div>
-//       <h1>All Burgers</h1>
-//       <ul>
-//       {error && <p>Error loading burgers: {error}</p>}
-//       <ul>
-//         {burgers.length > 0 ? (
-//           burgers.map((burger) => <li key={burger.id}>{burger.id}</li>)
-//         ) : (
-//           <p>No burgers found</p>
-//         )}
-//       </ul>
-//       </ul>
-//       <ul>
-//         <button onClick={() => handleUpdate(currentUser)}>Update Account</button>
-//         <button onClick={() => handleDelete(currentUser)}>Delete Account</button>
-//       </ul>
-//     </div>    
-//   </>
-//     )
-// }
-
 import { useState, useContext, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import CurrentUserContext from "../contexts/current-user-context";
@@ -108,14 +8,16 @@ export default function AccountPage() {
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const [burgers, setBurgers] = useState([]);
   const [error, setError] = useState(null);
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate()
   axios.defaults.withCredentials = true;
 
   const user = Cookies.get("currentUser");
 
   useEffect(() => {
-    const savedUser = Cookies.get("currentUser");
-    console.log(savedUser);
+    const savedUser = Cookies.get("currentUser")
     if (savedUser) {
       setCurrentUser(JSON.parse(savedUser));
     }
@@ -138,7 +40,6 @@ export default function AccountPage() {
         setError(err.message);
       }
     };
-
     fetchBurgers();
   }, []);
 
@@ -147,7 +48,6 @@ export default function AccountPage() {
     setError('');
     const formData = new FormData(event.target)
     const formObject = Object.fromEntries(formData)
-
     try {
       const user = JSON.parse(Cookies.get('currentUser')) 
       const userData = {
@@ -165,9 +65,11 @@ export default function AccountPage() {
             "Access-Control-Allow-Origin": `http://127.0.0.1:5000/auth/user/${userData.user_id}`,
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
           }
-        }
+        }  
       );
-      console.log("Account updated:", response.data);
+        setUsername('')
+        setEmail('')
+        setPassword('')
     } catch (err) {
       console.error("Failed to update account:", err.message);
     }
@@ -189,7 +91,6 @@ export default function AccountPage() {
       );
       setCurrentUser(null);
       Cookies.remove("currentUser");
-      console.log("Account deleted:", response.data);
       navigate(`/`)
     } catch (err) {
       console.error("Failed to delete account:", err.message);
@@ -212,7 +113,6 @@ export default function AccountPage() {
       );
       setCurrentUser(null);
       Cookies.remove("currentUser");
-      console.log("Account deleted:", response.data);
       navigate(`/`)
     } catch (err){
       console.error("Failed to sign out:", err.message);
@@ -227,7 +127,17 @@ export default function AccountPage() {
         <ul>
           {error && <p>Error loading burgers: {error}</p>}
           {burgers.length > 0 ? (
-            burgers.map((burger) => <li key={burger.id}>{burger.id}</li>)
+            burgers.map((burger) => <li key={burger.id}>  <div>
+            <ul>{burger.top_bun}</ul>
+            <ul>{burger.meat}</ul>
+            <ul>{burger.cheese}</ul>
+            <ul>{burger.sauce}</ul>
+            <ul>{burger.pickles}</ul>
+            <ul>{burger.lettuce}</ul>
+            <ul>{burger.tomato}</ul>
+            <ul>{burger.bottom_bun}</ul>
+        </div>
+        </li>)
           ) : (
             <p>No burgers found</p>
           )}
@@ -247,6 +157,8 @@ export default function AccountPage() {
                             id="username"
                             name="username"
                             placeholder="Enter your username"
+                            value={username} // Bind the state
+                            onChange={(e) => setUsername(e.target.value)} // Update state on change
                         />
                     </div>
                     <div className="emailBlock">
@@ -257,6 +169,8 @@ export default function AccountPage() {
                             id="email"
                             name="email"
                             placeholder="Enter your email"
+                            value={email} // Bind the state
+                            onChange={(e) => setEmail(e.target.value)} // Update state on change
                         />
                     </div>
 
@@ -268,6 +182,8 @@ export default function AccountPage() {
                             id="password"
                             name="password"
                             placeholder="Enter your password"
+                            value={password} // Bind the state
+                            onChange={(e) => setPassword(e.target.value)} // Update state on change
                         />
                     </div>
 

@@ -17,11 +17,8 @@ export default function Landing() {
     2. if yes, the buttons go to their acc, or their kitchen with their templates and current burger
     3. if no, the buttons lead to the noAccDetected page which will have login/signup options 
     */
-    console.log('home!')
     const handleClick = (button) => {
         const existingUser = Cookies.get('currentUser')
-       
-            console.log({existingUser})
             if(existingUser){ 
                 const existingUserData = JSON.parse(Cookies.get('currentUser'))
                 setTimeout(()=>{
