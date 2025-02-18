@@ -11,7 +11,7 @@ import CurrentUserContext from "../contexts/current-user-context";
 import axios from "axios";
 import Cookies from "js-cookie";
 // burger prop
-import Burger from "../props/3D_props/BurgerProp";
+import BurgerProp from "../props/3D_props/BurgerProp";
 
 export default function Kitchen() {
     const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
@@ -122,8 +122,8 @@ export default function Kitchen() {
     };
 
     const handleOpen = async (component, value) => {
-        console.log("Selected part:", part);
-        navigate(`/users/${burger.user_id}/${burger.id}/${component}`)
+        console.log("Selected part:", component);
+        navigate(`/users/${currentUser.id}/${burger.id}/${component}`)
     }
 
     const handleTemplate = async () => {
@@ -149,7 +149,11 @@ export default function Kitchen() {
                 {error && <p>{error}</p>}
 
                 <div>
-                    <Burger onPartClick={handleOpen} />
+                {burger ? (
+                <BurgerProp onPartClick={handleOpen} />
+                ) : (
+                <p>Loading burger...</p> // Placeholder or loading message
+                )}
                 </div>
                 {templateBurgers.length > 0 ? (
                     templateBurgers.map((burger) => <li key={burger.id}>{

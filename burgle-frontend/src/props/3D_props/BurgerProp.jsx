@@ -7,7 +7,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 
 // Define the Burger component
-const Burger = ({ onPartClick = () => { } }) => {
+const BurgerProp = ({ onPartClick = () => { } }) => {
     // Load the 3D model from Flask backend
     const { scene } = useGLTF('http://127.0.0.1:5000/static/ThreeJSModels/FinalBurglBurgerModel.glb');
     // State to track the part of the model the user's cursor is "touching"
@@ -28,20 +28,20 @@ const Burger = ({ onPartClick = () => { } }) => {
 
     return (
         <div id='3DBurgerContainer' >
-            <Canvas style={{ width: 900, height: 500 }} camera={[0, 0, 0]}>
+            <Canvas style={{ width: 900, height: 500 }} camera={[0, 0, 10]}>
                 {/* OrbitControls added to control camera view */}
                 <OrbitControls
-                    enableZoom={true} // Allows zooming in/out 
+                    enableZoom={false} // Allows zooming in/out 
                     enableRotate={true} // Allows rotating the camera 
                     enablePan={true} // Allows panning the camera 
                     maxPolarAngle={Math.PI / 2} // Limits the vertical rotation to 90 degrees 
-                    minDistance={7} // Minimum zoom distance 
-                    maxDistance={10} // Maximum zoom distance
+                    minDistance={10} // Minimum zoom distance 
+                    maxDistance={20} // Maximum zoom distance
                 /> {/* Lighting */}
                 <ambientLight intensity={0.5} />
                 <directionalLight position={[5, 5, 5]} intensity={1} />
                 {/* Model */}
-                <primitive object={scene} onClick={(e) => handleClick(e.object.name)} />
+                <primitive object={scene} position={[0, -6, -0.5]} onClick={(e) => handleClick(e.object.name)} />
             </Canvas>
 
         </div>
@@ -49,4 +49,4 @@ const Burger = ({ onPartClick = () => { } }) => {
     );
 };
 
-export default Burger;
+export default BurgerProp;
