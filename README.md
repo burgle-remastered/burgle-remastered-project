@@ -13,12 +13,14 @@ Often times, neurodivergent people are not taught how to regulate themselves, es
 
 ---
 
-## 🌃 Summary
+## 🌃 Features
+Burger Creation: Users can create their own custom burger for the day to structure their day
 
----
+Custom-Templates: Users can save their burgers as templates to **eventually** use later
 
-## 🌝 Our Hypothesis
+Account Management: Users can access and manage their accounts
 
+3D Interactive Models: Our website contains 3D models that the user can interact with
 
 ---
 
@@ -50,17 +52,9 @@ Burgle!: Remastered was inspired by the regulation/time management strategy for 
 
 ---
 
-## 👫 Who do we serve?
-**Neurodivergent Individuals**
-
-
-
----
-
 ## 📜 User-stories
 
 ### MVP Stories
-**User**
 
 As a user, I want to sign up/log in, so that I can access my account and burgers.
 
@@ -85,33 +79,22 @@ As a user, I want to delete my burger, so that I can start fresh for the day.
 As a user, I want to record my "spoon count", so that I can measure my energy for the day.
 
 ### Stretch Stories
-**User**
 
-As a user, I want to 
+As a user, I want to delegate spoons to each component of the burger, so I can visualize the effort each task takes.
 
-As a user, I want to 
+As a user, I want to drive to the kitchen, so I can interact more with the website.
 
-As a user, I want to 
+As a user, I want to reuse my templates, so I can easily make a new burger for the day.
 
----
-
-## 🤨 Key Technical Challenges
-
+As a user, I want to have access to music, to help me relax as I journal.
 
 ---
 
-## 🥳 Extension Opportunities 
-**Social Networking Feature**
-
-
-
----
-
-## 🎞️ Demo Video
-
-![Demo Video]()
+## 💻 Technologies Used
+Frontend: Javascript, React, Three.js, Axios, and Blender
+Backend: Python, Flask, Flask-Cors, and Bycrpt 
+Database: PostgreSQl and SQLAlchemy 
 
 ---
 
-## 🔍 Sources
 
