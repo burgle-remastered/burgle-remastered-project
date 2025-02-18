@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import BurgrLogo from "../reusable_components/BurgrLogo";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import CurrentUserContext from "../contexts/current-user-context";
 import Burger from "../props/3D_props/BurgerProp";
 import axios from "axios"
@@ -11,6 +11,14 @@ export default function Landing() {
     const navigate = useNavigate();
     const [errorText, setErrorText] = useState('');
     const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
+
+    useEffect(() => {
+        // Set background image for Home page (image from public/images)
+        document.body.style.backgroundImage = 'url(../props/Backgrounds/Burgle_Landing.jpg)';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+    }, []);
+
 
     axios.defaults.withCredentials = true
     /* here we'd:
