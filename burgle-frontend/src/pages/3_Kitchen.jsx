@@ -5,11 +5,13 @@
 // import settings icon prop (component) (STRETCH)
 // import user account settings icon (component)
 // useState for save button and add tasks pop up (pop up when burger model is made)
-import { useState, useContext, useEffect} from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CurrentUserContext from "../contexts/current-user-context";
 import axios from "axios";
 import Cookies from "js-cookie";
+// burger prop
+import Burger from "../props/3D_props/BurgerProp";
 
 export default function Kitchen() {
     const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
@@ -22,12 +24,12 @@ export default function Kitchen() {
     const navigate = useNavigate()
     axios.defaults.withCredentials = true;
 
-     useEffect(() => {
-            const savedUser = Cookies.get("currentUser");
-            if (savedUser) {
-              setCurrentUser(JSON.parse(savedUser));
-            }
-          }, []);
+    useEffect(() => {
+        const savedUser = Cookies.get("currentUser");
+        if (savedUser) {
+            setCurrentUser(JSON.parse(savedUser));
+        }
+    }, []);
 
     const getDate = () => {
         const today = new Date();
@@ -35,46 +37,46 @@ export default function Kitchen() {
         const year = today.getFullYear();
         const date = today.getDate();
         return `${year}-${month}-${date}`;
-      }
+    }
     useEffect(() => {
         const fetchBurger = async () => {
-          try {
-            const date = getDate()
-            const user = JSON.parse(Cookies.get('currentUser')) 
-            const response = await axios.post(`http://127.0.0.1:5000/burger/${date}`,{
-              withCredentials: true,
-              headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json", // We're telling the server we expect JSON
-              },  body: {user: user[0].user_id}
-            });
-            setBurger(response.data)
-          } catch (err) {
-            setError(err.message);
-          }
+            try {
+                const date = getDate()
+                const user = JSON.parse(Cookies.get('currentUser'))
+                const response = await axios.post(`http://127.0.0.1:5000/burger/${date}`, {
+                    withCredentials: true,
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json", // We're telling the server we expect JSON
+                    }, body: { user: user[0].user_id }
+                });
+                setBurger(response.data)
+            } catch (err) {
+                setError(err.message);
+            }
         };
         fetchBurger();
-      }, []);
+    }, []);
 
-      useEffect(() => {
+    useEffect(() => {
         const fetchTemplateBurgers = async () => {
-          try {
-            const user = JSON.parse(Cookies.get('currentUser')) 
-            const response = await axios.post("http://127.0.0.1:5000/burger/template", {
-              withCredentials: true,
-              headers: {
-                Accept: "application/json",
-              },
-              body: {user: user[0].user_id}
-              ,
-            });
-            setTemplateBurgers(response.data.burgers)
-          } catch (err) {
-            setError(err.message);
-          }
+            try {
+                const user = JSON.parse(Cookies.get('currentUser'))
+                const response = await axios.post("http://127.0.0.1:5000/burger/template", {
+                    withCredentials: true,
+                    headers: {
+                        Accept: "application/json",
+                    },
+                    body: { user: user[0].user_id }
+                    ,
+                });
+                setTemplateBurgers(response.data.burgers)
+            } catch (err) {
+                setError(err.message);
+            }
         };
         fetchTemplateBurgers();
-      }, []);
+    }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -83,7 +85,7 @@ export default function Kitchen() {
         const formObject = Object.fromEntries(formData)
 
         try {
-            const user = JSON.parse(Cookies.get('currentUser')) 
+            const user = JSON.parse(Cookies.get('currentUser'))
             const burgerData = {
                 "top_bun": formObject.top_bun,
                 "meat": formObject.meat,
@@ -95,20 +97,20 @@ export default function Kitchen() {
             };
             const response = await axios.post('http://127.0.0.1:5000/burger/', burgerData, {
                 withCredentials: true, headers: {
-                    'Content-Type': 'application/json', 
-                  }
-              });
+                    'Content-Type': 'application/json',
+                }
+            });
             const burger = response.data
             setBurger(burger)
-          } catch (error) {
+        } catch (error) {
             setError(error.response?.data?.error || 'An error occurred during creation.')
-          }
+        }
     };
 
-    const handleUpdateBurger = async (component,value) => {
+    const handleUpdateBurger = async (component, value) => {
         try {
-            const user = JSON.parse(Cookies.get('currentUser')) 
-            const updatedData = { burger_id:burger.id,user_id:user[0].user_id,[component]: value };
+            const user = JSON.parse(Cookies.get('currentUser'))
+            const updatedData = { burger_id: burger.id, user_id: user[0].user_id, [component]: value };
             const response = await axios.patch(`http://127.0.0.1:5000/burger/${burger.id}`, updatedData, {
                 withCredentials: true,
                 headers: { 'Content-Type': 'application/json' }
@@ -119,14 +121,15 @@ export default function Kitchen() {
         }
     };
 
-    const handleOpen = async (component,value) => {
+    const handleOpen = async (component, value) => {
+        console.log("Selected part:", part);
         navigate(`/users/${burger.user_id}/${burger.id}/${component}`)
     }
 
     const handleTemplate = async () => {
         try {
-            const user = JSON.parse(Cookies.get('currentUser')) 
-            const updatedData = { burger_id:burger.id,user_id:user[0].user_id, is_template: true};
+            const user = JSON.parse(Cookies.get('currentUser'))
+            const updatedData = { burger_id: burger.id, user_id: user[0].user_id, is_template: true };
             const response = await axios.patch(`http://127.0.0.1:5000/burger/${burger.id}`, updatedData, {
                 withCredentials: true,
                 headers: { 'Content-Type': 'application/json' }
@@ -136,179 +139,182 @@ export default function Kitchen() {
             setError('Failed to update burger');
         }
     }
-    
+
 
     return (
         <>
             <h2> Kitchen</h2>
             <h3>Menu</h3>
-        <ul>
-          {error && <p>{error}</p>}
-          
-          {templateBurgers.length > 0 ? (
-            templateBurgers.map((burger) => <li key={burger.id}>{
+            <ul>
+                {error && <p>{error}</p>}
+
                 <div>
-                    <ul>{burger.top_bun}</ul>
-                    <ul>{burger.meat}</ul>
-                    <ul>{burger.cheese}</ul>
-                    <ul>{burger.sauce}</ul>
-                    <ul>{burger.pickles}</ul>
-                    <ul>{burger.lettuce}</ul>
-                    <ul>{burger.tomato}</ul>
-                    <ul>{burger.bottom_bun}</ul>
+                    <Burger onPartClick={handleOpen} />
                 </div>
-                }</li>)
-          ) : (
-            <p>No burgers found</p>
-          )}
-        </ul>
-            <button onClick={()=>navigate('/')}>Back</button>
+                {templateBurgers.length > 0 ? (
+                    templateBurgers.map((burger) => <li key={burger.id}>{
+                        <div>
+                            <ul>{burger.top_bun}</ul>
+                            <ul>{burger.meat}</ul>
+                            <ul>{burger.cheese}</ul>
+                            <ul>{burger.sauce}</ul>
+                            <ul>{burger.pickles}</ul>
+                            <ul>{burger.lettuce}</ul>
+                            <ul>{burger.tomato}</ul>
+                            <ul>{burger.bottom_bun}</ul>
+                        </div>
+                    }</li>)
+                ) : (
+                    <p>No burgers found</p>
+                )}
+            </ul>
+            <button onClick={() => navigate('/')}>Back</button>
             {burger && (
                 <div className="burgerDetails">
                     <h3>Your Burger</h3>
-                    <button onClick={()=>handleOpen("top_bun",burger.top_bun)} >Top Bun: {burger.top_bun}</button>
-                    <button onClick={()=>handleOpen("meat",burger.meat)} >Meat: {burger.meat}</button>
-                    <button onClick={()=>handleOpen("cheese",burger.cheese)} >Cheese: {burger.cheese}</button>
-                    <button onClick={()=>handleOpen("sauce",burger.sauce)} >Sauce: {burger.sauce}</button>
+                    <button onClick={() => handleOpen("top_bun", burger.top_bun)} >Top Bun: {burger.top_bun}</button>
+                    <button onClick={() => handleOpen("meat", burger.meat)} >Meat: {burger.meat}</button>
+                    <button onClick={() => handleOpen("cheese", burger.cheese)} >Cheese: {burger.cheese}</button>
+                    <button onClick={() => handleOpen("sauce", burger.sauce)} >Sauce: {burger.sauce}</button>
                     {burger.pickles && (
-                        <button onClick={()=>handleOpen("pickles",burger.pickles)} >Pickles: {burger.pickles}</button>
+                        <button onClick={() => handleOpen("pickles", burger.pickles)} >Pickles: {burger.pickles}</button>
                     )}
                     {burger.lettuce && (
-                        <button onClick={()=>handleOpen("lettuce",burger.lettuce)} >Lettuce: {burger.lettuce}</button>
+                        <button onClick={() => handleOpen("lettuce", burger.lettuce)} >Lettuce: {burger.lettuce}</button>
                     )}
                     {burger.tomato && (
-                        <button onClick={()=>handleOpen("tomato",burger.tomato)} >Tomato: {burger.tomato}</button>
+                        <button onClick={() => handleOpen("tomato", burger.tomato)} >Tomato: {burger.tomato}</button>
                     )}
-                    <button onClick={()=>handleOpen("bottom_bun",burger.bottom_bun)} >Bottom Bun: {burger.bottom_bun}</button>
+                    <button onClick={() => handleOpen("bottom_bun", burger.bottom_bun)} >Bottom Bun: {burger.bottom_bun}</button>
                     <button >Spoon Count: {burger.spoon_count}</button>
 
                 </div>
             )}
-            <button onClick={()=>handleTemplate()}>Add as template</button>
-            
+            <button onClick={() => handleTemplate()}>Add as template</button>
+
             <div className="burgerForm">
                 {!burger && (
-                <form onSubmit={handleSubmit} aria-labelledby="burger-heading">
-                    <h2 id="burger-heading" className="header2">
-                        Welcome Back to the Kitchen, Toots!
-                    </h2>
+                    <form onSubmit={handleSubmit} aria-labelledby="burger-heading">
+                        <h2 id="burger-heading" className="header2">
+                            Welcome Back to the Kitchen, Toots!
+                        </h2>
 
-                    <div className="top_bunBlock">
-                        <label htmlFor="top_bun" className="top_bun">top_bun</label>
-                        <input
-                            type="text"
-                            autoComplete="top_bun"
-                            id="top_bun"
-                            name="top_bun"
-                            placeholder="Enter your morning routine"
-                        />
-                    </div>
+                        <div className="top_bunBlock">
+                            <label htmlFor="top_bun" className="top_bun">top_bun</label>
+                            <input
+                                type="text"
+                                autoComplete="top_bun"
+                                id="top_bun"
+                                name="top_bun"
+                                placeholder="Enter your morning routine"
+                            />
+                        </div>
 
-                    <div className="meatBlock">
-                        <label htmlFor="meat" className="meat">meat</label>
-                        <input
-                            type="meat"
-                            autoComplete="current-meat"
-                            id="meat"
-                            name="meat"
-                            placeholder="Enter your big task"
-                        />
-                    </div>
-                    <div className="cheeseBlock">
-                        <label htmlFor="cheese" className="cheese">cheese</label>
-                        <input
-                            type="cheese"
-                            autoComplete="current-cheese"
-                            id="cheese"
-                            name="cheese"
-                            placeholder="Enter your relaxation"
-                        />
-                    </div>
-                    <div className="sauceBlock">
-                        <label htmlFor="sauce" className="sauce">sauce</label>
-                        <input
-                            type="sauce"
-                            autoComplete="current-sauce"
-                            id="sauce"
-                            name="sauce"
-                            placeholder="Enter your reflection"
-                        />
-                    </div>
-                    <div className="bottom_bunBlock">
-                        <label htmlFor="bottom_bun" className="bottom_bun">bottom_bun</label>
-                        <input
-                            type="bottom_bun"
-                            autoComplete="current-bottom_bun"
-                            id="bottom_bun"
-                            name="bottom_bun"
-                            placeholder="Enter your night routine"
-                        />
-                    </div>
-                    <div className="spoon_countBlock">
-                        <label htmlFor="spoon_count" className="spoon_count">spoon_count</label>
-                        <input
-                            type="spoon_count"
-                            autoComplete="current-spoon_count"
-                            id="spoon_count"
-                            name="spoon_count"
-                            placeholder="Enter your spoons"
-                        />
-                    </div>
-                    <button>Create Burger!</button>
-                </form>
-            )}
+                        <div className="meatBlock">
+                            <label htmlFor="meat" className="meat">meat</label>
+                            <input
+                                type="meat"
+                                autoComplete="current-meat"
+                                id="meat"
+                                name="meat"
+                                placeholder="Enter your big task"
+                            />
+                        </div>
+                        <div className="cheeseBlock">
+                            <label htmlFor="cheese" className="cheese">cheese</label>
+                            <input
+                                type="cheese"
+                                autoComplete="current-cheese"
+                                id="cheese"
+                                name="cheese"
+                                placeholder="Enter your relaxation"
+                            />
+                        </div>
+                        <div className="sauceBlock">
+                            <label htmlFor="sauce" className="sauce">sauce</label>
+                            <input
+                                type="sauce"
+                                autoComplete="current-sauce"
+                                id="sauce"
+                                name="sauce"
+                                placeholder="Enter your reflection"
+                            />
+                        </div>
+                        <div className="bottom_bunBlock">
+                            <label htmlFor="bottom_bun" className="bottom_bun">bottom_bun</label>
+                            <input
+                                type="bottom_bun"
+                                autoComplete="current-bottom_bun"
+                                id="bottom_bun"
+                                name="bottom_bun"
+                                placeholder="Enter your night routine"
+                            />
+                        </div>
+                        <div className="spoon_countBlock">
+                            <label htmlFor="spoon_count" className="spoon_count">spoon_count</label>
+                            <input
+                                type="spoon_count"
+                                autoComplete="current-spoon_count"
+                                id="spoon_count"
+                                name="spoon_count"
+                                placeholder="Enter your spoons"
+                            />
+                        </div>
+                        <button>Create Burger!</button>
+                    </form>
+                )}
                 {/* Dynamic form for additional components */}
                 <div className="additionalComponents">
-                        {burger && (<div>
-                            <h3>Add Extra Components</h3>
-                            {!burger.pickles && (
-                                <div className="picklesBlock">
-                            <label htmlFor="pickles">Pickles</label>
-                            <input
-                                type="text"
-                                id="pickles"
-                                value={pickles}
-                                onChange={(e) => setPickles(e.target.value)}
-                                placeholder="Add pickles"
-                            />
-                            <button type="button" onClick={() => handleUpdateBurger('pickles', pickles)}>
-                                Add Pickles
-                            </button>
-                        </div>
-                            )}
-                            {!burger.lettuce && (
-                                <div>
-                                   <div className="lettuceBlock">
-                            <label htmlFor="lettuce">Lettuce</label>
-                            <input
-                                type="text"
-                                id="lettuce"
-                                value={lettuce}
-                                onChange={(e) => setLettuce(e.target.value)}
-                                placeholder="Add lettuce"
-                            />
-                            <button type="button" onClick={() => handleUpdateBurger('lettuce', lettuce)}>
-                                Add Lettuce
-                            </button> 
-                            </div>  
-                        </div>
-                            )
-                            }
-                            {!burger.tomato && (
-                                 <div className="tomatoBlock">
-                            <label htmlFor="tomato">Tomato</label>
-                            <input
-                                type="text"
-                                id="tomato"
-                                value={tomato}
-                                onChange={(e) => setTomato(e.target.value)}
-                                placeholder="Add tomato"
-                            />
-                            <button type="button" onClick={() => handleUpdateBurger('tomato', tomato)}>
-                                Add Tomato
-                            </button>
-                        </div>
-                            )} 
+                    {burger && (<div>
+                        <h3>Add Extra Components</h3>
+                        {!burger.pickles && (
+                            <div className="picklesBlock">
+                                <label htmlFor="pickles">Pickles</label>
+                                <input
+                                    type="text"
+                                    id="pickles"
+                                    value={pickles}
+                                    onChange={(e) => setPickles(e.target.value)}
+                                    placeholder="Add pickles"
+                                />
+                                <button type="button" onClick={() => handleUpdateBurger('pickles', pickles)}>
+                                    Add Pickles
+                                </button>
+                            </div>
+                        )}
+                        {!burger.lettuce && (
+                            <div>
+                                <div className="lettuceBlock">
+                                    <label htmlFor="lettuce">Lettuce</label>
+                                    <input
+                                        type="text"
+                                        id="lettuce"
+                                        value={lettuce}
+                                        onChange={(e) => setLettuce(e.target.value)}
+                                        placeholder="Add lettuce"
+                                    />
+                                    <button type="button" onClick={() => handleUpdateBurger('lettuce', lettuce)}>
+                                        Add Lettuce
+                                    </button>
+                                </div>
+                            </div>
+                        )
+                        }
+                        {!burger.tomato && (
+                            <div className="tomatoBlock">
+                                <label htmlFor="tomato">Tomato</label>
+                                <input
+                                    type="text"
+                                    id="tomato"
+                                    value={tomato}
+                                    onChange={(e) => setTomato(e.target.value)}
+                                    placeholder="Add tomato"
+                                />
+                                <button type="button" onClick={() => handleUpdateBurger('tomato', tomato)}>
+                                    Add Tomato
+                                </button>
+                            </div>
+                        )}
                     </div>
                     )}
                 </div>
