@@ -2,7 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import BurgrLogo from "../reusable_components/BurgrLogo";
 import { useState, useContext, useEffect } from "react";
 import CurrentUserContext from "../contexts/current-user-context";
-import Burger from "../props/3D_props/BurgerProp";
+
+import Truck from "../props/3D_props/TruckProp";
 import axios from "axios"
 import Cookies from 'js-cookie'
 
@@ -41,7 +42,7 @@ export default function Landing() {
             <BurgrLogo />
 
             <div>
-                <Burger />
+                <Truck />
                 {/* make it so they are both not highlighted. Now that the routes are in place, these links can use the paths established by the routes to navigate the site! */}
                 {/* conditional render, function inside "to" tag will check if there's a user logged in. if user isn't logged in, both buttons lead to log in page. If user is logged in, buttons will lead to their respective pages   */}
                 <button id="kitchenButton" onClick={() => handleClick('kitchen')}>Go to Kitchen!</button>

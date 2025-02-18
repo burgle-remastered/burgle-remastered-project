@@ -10,7 +10,7 @@ const Burger = () => {
     const { scene } = useGLTF('http://127.0.0.1:5000/static/ThreeJSModels/FinalBurglBurgerModel.glb');
 
     return (
-        <div>
+        <div id='3DBurgerContainer' >
             <Canvas>
                 {/* OrbitControls added to control camera view */}
                 <OrbitControls
@@ -18,8 +18,8 @@ const Burger = () => {
                     enableRotate={true} // Allows rotating the camera 
                     enablePan={true} // Allows panning the camera 
                     maxPolarAngle={Math.PI / 2} // Limits the vertical rotation to 90 degrees 
-                    minDistance={2} // Minimum zoom distance 
-                    maxDistance={10} // Maximum zoom distance
+                    minDistance={10} // Minimum zoom distance 
+                    maxDistance={20} // Maximum zoom distance
                 /> {/* Lighting */}
                 <ambientLight intensity={0.5} />
                 <directionalLight position={[5, 5, 5]} intensity={1} />
