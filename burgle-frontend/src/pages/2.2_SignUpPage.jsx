@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 import CurrentUserContext from "../contexts/current-user-context";
 import axios from "axios"
@@ -15,6 +15,13 @@ export default function SignUp() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+
+    useEffect(() => {
+        // Set background image for Home page (image from public/images)
+        document.body.style.backgroundColor = '#EDC06D';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+    }, []);
 
     //   // users shouldn't be able to see the sign up page if they are already logged in.
     //   // if the currentUser exists in the context, navigate the user to 
@@ -34,12 +41,12 @@ export default function SignUp() {
                 email: formObject.email,
                 password: formObject.password
             };
-                  
+
             console.log("User to add:", userData)
             const response = await axios.post('http://127.0.0.1:5000/auth/register', userData, {
                 withCredentials: true, headers: {
                     'Content-Type': 'application/json', // Make sure it's set to JSON
-                  }
+                }
             })
             const user = response.data
             Cookies.set('currentUser', JSON.stringify(user), { expires: 7 })
@@ -47,8 +54,8 @@ export default function SignUp() {
             setTimeout(() => {
                 const user = JSON.parse(Cookies.get('currentUser'))
                 navigate(`/users/${user.user_id}`);  // cookies weren't being set in time so we need to wait
-            }, 100);  
-        } catch(err){
+            }, 100);
+        } catch (err) {
             console.log("Error:", err);
             console.log("Error response:", err.response);
             setErrorText(err.response?.data?.error || 'An error occurred during signup.')
@@ -66,72 +73,79 @@ export default function SignUp() {
     return (
         <>
             <div className="signUpForm">
-                <h2 className="header2">Sign Up</h2>
-                <form className="signUpForm" onSubmit={handleSubmit}>
+
+
+                <h2 className="header2">Sign Up... Muahahah</h2>
+                <form onSubmit={handleSubmit}>
                     {/* Name */}
-                    <div className="nameInput">
+
+                    <div className="inputBlock">
+                        <label htmlFor="name">Your Name: </label>
                         <input
                             type="text"
                             name="name"
                             id="name"
-                            placeholder=""
+                            className="inputBox"
+                            placeholder="Don't forget it!"
                             required
                             autoComplete="off"
                             onChange={handleChange}
                             value={name}
                         />
-                        <label htmlFor="name">Your Name</label>
                     </div>
 
                     {/* Username */}
-                    <div className="username">
+                    <div className="inputBlock">
+                        <label htmlFor="username" className="username">Username: </label>
                         <input
                             type="text"
                             name="username"
                             id="username"
-                            placeholder=""
+                            placeholder="Make it good..."
                             required
                             autoComplete="off"
                             onChange={handleChange}
                             value={username}
                         />
-                        <label htmlFor="username">Username</label>
                     </div>
 
                     {/* Password */}
-                    <div className="password">
+                    <div className="inputBlock">
+                        <label htmlFor="password" className="password">Password: </label>
                         <input
                             type="password"
                             name="password"
                             id="password"
-                            placeholder=""
+                            placeholder="Be strong..."
                             required
                             autoComplete="off"
                             onChange={handleChange}
                             value={password}
                         />
-                        <label htmlFor="password">Password</label>
                     </div>
 
-                    <div className="email">
+                    <div className="inputBlock">
+                        <label htmlFor="email">Email: </label>
                         <input
                             type="email"
                             name="email"
                             id="email"
-                            placeholder=""
+                            placeholder="@!$#"
                             required
                             autoComplete="off"
                             onChange={handleChange}
                             value={email}
                         />
-                        <label htmlFor="email">Email</label>
                     </div>
-                    <button type="submit">Sign Up Now</button>
-                </form>
 
-                {!!errorText && <p>{errorText}</p>}
-                <p className="smallWords">Already have an account with us? <Link to="/login">Log in!</Link></p>
-            </div>
+
+                    <button type="submit" className="button" id="signUpButton">Sign Up!</button>
+                </form >
+
+                {!!errorText && <p>{errorText}</p>
+                }
+                <p className="smallWords">Already have an account with us? <Link to="/login" id="loginMessage">Log in!</Link></p>
+            </div >
 
         </>
     )

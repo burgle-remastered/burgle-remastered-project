@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect} from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CurrentUserContext from "../contexts/current-user-context";
 import axios from "axios";
@@ -24,6 +24,13 @@ export default function AccountPage() {
   }, []);
 
   useEffect(() => {
+    // Set background image for Home page (image from public/images)
+    document.body.style.backgroundColor = '#EDC06D';
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+  }, []);
+
+  useEffect(() => {
     const fetchBurgers = async () => {
       try {
         const user = JSON.parse(Cookies.get('currentUser'))   // This will give you the data directly
@@ -32,7 +39,7 @@ export default function AccountPage() {
           headers: {
             Accept: "application/json", // We're telling the server we expect JSON
           },
-          body: {user: user[0].user_id}
+          body: { user: user[0].user_id }
           ,
         });
         setBurgers(response.data.burgers); // Assuming the response contains `burgers` data
@@ -49,7 +56,7 @@ export default function AccountPage() {
     const formData = new FormData(event.target)
     const formObject = Object.fromEntries(formData)
     try {
-      const user = JSON.parse(Cookies.get('currentUser')) 
+      const user = JSON.parse(Cookies.get('currentUser'))
       const userData = {
         user_id: user[0].user_id,
         username: formObject.username || user.username,
@@ -65,11 +72,11 @@ export default function AccountPage() {
             "Access-Control-Allow-Origin": `http://127.0.0.1:5000/auth/user/${userData.user_id}`,
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
           }
-        }  
+        }
       );
-        setUsername('')
-        setEmail('')
-        setPassword('')
+      setUsername('')
+      setEmail('')
+      setPassword('')
     } catch (err) {
       console.error("Failed to update account:", err.message);
     }
@@ -77,7 +84,7 @@ export default function AccountPage() {
 
   const handleDelete = async () => {
     try {
-      const user = JSON.parse(Cookies.get('currentUser')) 
+      const user = JSON.parse(Cookies.get('currentUser'))
       const response = await axios.delete(
         `http://127.0.0.1:5000/auth/user/del/${user[0].user_id}`,
         {
@@ -99,7 +106,7 @@ export default function AccountPage() {
 
   const handleSignOut = async () => {
     try {
-      const user = JSON.parse(Cookies.get('currentUser')) 
+      const user = JSON.parse(Cookies.get('currentUser'))
       const response = await axios.get(
         `http://127.0.0.1:5000/auth/logout`,
         {
@@ -114,82 +121,82 @@ export default function AccountPage() {
       setCurrentUser(null);
       Cookies.remove("currentUser");
       navigate(`/`)
-    } catch (err){
+    } catch (err) {
       console.error("Failed to sign out:", err.message);
     }
   }
 
   return (
     <>
-      <div>
-      <button onClick={()=>navigate('/')}>Back</button>
+      <div className="text">
+        <button onClick={() => navigate('/')}>Back</button>
         <h1>All Burgers</h1>
         <ul>
           {error && <p>Error loading burgers: {error}</p>}
           {burgers.length > 0 ? (
             burgers.map((burger) => <li key={burger.id}>  <div>
-            <ul>{burger.top_bun}</ul>
-            <ul>{burger.meat}</ul>
-            <ul>{burger.cheese}</ul>
-            <ul>{burger.sauce}</ul>
-            <ul>{burger.pickles}</ul>
-            <ul>{burger.lettuce}</ul>
-            <ul>{burger.tomato}</ul>
-            <ul>{burger.bottom_bun}</ul>
-        </div>
-        </li>)
+              <ul>{burger.top_bun}</ul>
+              <ul>{burger.meat}</ul>
+              <ul>{burger.cheese}</ul>
+              <ul>{burger.sauce}</ul>
+              <ul>{burger.pickles}</ul>
+              <ul>{burger.lettuce}</ul>
+              <ul>{burger.tomato}</ul>
+              <ul>{burger.bottom_bun}</ul>
+            </div>
+            </li>)
           ) : (
             <p>No burgers found</p>
           )}
         </ul>
         <ul>
-        <div className="Update-Form">
-                <form onSubmit={handleUpdate} aria-labelledby="update-heading">
-                    <h2 id="update-heading" className="header2">
-                        Fix Your Account, Toots!
-                    </h2>
+          <div className="Update-Form">
+            <form onSubmit={handleUpdate} aria-labelledby="update-heading">
+              <h2 id="update-heading" className="header2">
+                Fix Your Account, Toots!
+              </h2>
 
-                    <div className="usernameBlock">
-                        <label htmlFor="username" className="username">Username</label>
-                        <input
-                            type="text"
-                            autoComplete="username"
-                            id="username"
-                            name="username"
-                            placeholder="Enter your username"
-                            value={username} // Bind the state
-                            onChange={(e) => setUsername(e.target.value)} // Update state on change
-                        />
-                    </div>
-                    <div className="emailBlock">
-                        <label htmlFor="email" className="email">Email</label>
-                        <input
-                            type="text"
-                            autoComplete="email"
-                            id="email"
-                            name="email"
-                            placeholder="Enter your email"
-                            value={email} // Bind the state
-                            onChange={(e) => setEmail(e.target.value)} // Update state on change
-                        />
-                    </div>
-
-                    <div className="passwordBlock">
-                        <label htmlFor="password" className="password">Password</label>
-                        <input
-                            type="password"
-                            autoComplete="current-password"
-                            id="password"
-                            name="password"
-                            placeholder="Enter your password"
-                            value={password} // Bind the state
-                            onChange={(e) => setPassword(e.target.value)} // Update state on change
-                        />
-                    </div>
-
-                    <button>Update!</button>
-                </form>
+              <div className="usernameBlock">
+                <label htmlFor="username" className="username">Username</label>
+                <input
+                  type="text"
+                  autoComplete="username"
+                  id="username"
+                  name="username"
+                  placeholder="Enter your username"
+                  value={username} // Bind the state
+                  onChange={(e) => setUsername(e.target.value)} // Update state on change
+                />
               </div>
+              <div className="emailBlock">
+                <label htmlFor="email" className="email">Email</label>
+                <input
+                  type="text"
+                  autoComplete="email"
+                  id="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  value={email} // Bind the state
+                  onChange={(e) => setEmail(e.target.value)} // Update state on change
+                />
+              </div>
+
+              <div className="passwordBlock">
+                <label htmlFor="password" className="password">Password</label>
+                <input
+                  type="password"
+                  autoComplete="current-password"
+                  id="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  value={password} // Bind the state
+                  onChange={(e) => setPassword(e.target.value)} // Update state on change
+                />
+              </div>
+
+              <button>Update!</button>
+            </form>
+          </div>
           <button onClick={() => handleDelete()}>Delete Account</button>
           <button onClick={() => handleSignOut()}>Sign Out</button>
         </ul>

@@ -31,6 +31,13 @@ export default function Kitchen() {
         }
     }, []);
 
+    useEffect(() => {
+        // Set background image for Home page (image from public/images)
+        document.body.style.backgroundColor = '#3B7A9B';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+    }, []);
+
     const getDate = () => {
         const today = new Date();
         const month = today.getMonth() + 1;
@@ -147,44 +154,44 @@ export default function Kitchen() {
             <div id="kitchenSpace" className="flex flex-row h-64">
 
                 {/* Template menu */}
-            <div id="userMenu">
-            <h3>Menu</h3>
-                {templateBurgers.length > 0 ? (
-                    templateBurgers.map((burger) => <li key={burger.id}>{
-                        <div>
-                            <ul>{burger.top_bun}</ul>
-                            <ul>{burger.meat}</ul>
-                            <ul>{burger.cheese}</ul>
-                            <ul>{burger.sauce}</ul>
-                            <ul>{burger.pickles}</ul>
-                            <ul>{burger.lettuce}</ul>
-                            <ul>{burger.tomato}</ul>
-                            <ul>{burger.bottom_bun}</ul>
-                        </div>
-                    }</li>)
-                ) : (
-                    <p>No burgers found</p>
-                )}
+                <div id="userMenu">
+                    <h3>Menu</h3>
+                    {templateBurgers.length > 0 ? (
+                        templateBurgers.map((burger) => <li key={burger.id}>{
+                            <div>
+                                <ul>{burger.top_bun}</ul>
+                                <ul>{burger.meat}</ul>
+                                <ul>{burger.cheese}</ul>
+                                <ul>{burger.sauce}</ul>
+                                <ul>{burger.pickles}</ul>
+                                <ul>{burger.lettuce}</ul>
+                                <ul>{burger.tomato}</ul>
+                                <ul>{burger.bottom_bun}</ul>
+                            </div>
+                        }</li>)
+                    ) : (
+                        <p>No burgers found</p>
+                    )}
                 </div>
 
                 {/* Burger */}
                 {error && <p>{error}</p>}
 
-                    <div id="burgerSpace">
+                <div id="burgerSpace">
                     {burger ? (
-                    <BurgerProp onPartClick={handleOpen} />
+                        <BurgerProp onPartClick={handleOpen} />
                     ) : (
-                    <p>Loading burger...</p> // Placeholder or loading message
+                        <p>Loading burger...</p> // Placeholder or loading message
                     )}
-                    </div>
+                </div>
 
             </div>
-            
-          
-            
-               
-               
-        
+
+
+
+
+
+
             <button onClick={() => navigate('/')}>Back</button>
             {burger && (
                 <div className="burgerDetails">

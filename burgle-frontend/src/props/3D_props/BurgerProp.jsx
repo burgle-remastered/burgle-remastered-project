@@ -44,13 +44,13 @@ const BurgerProp = ({ onPartClick = () => { } }) => {
                 <ambientLight intensity={0.5} />
                 <directionalLight position={[5, 5, 5]} intensity={1} />
                 {/* Model */}
-                <primitive 
-                object={scene} 
-                position={[0, -6, -0.5]} 
-                onClick={(e) => handleClick(e.object.name)}
-                onPointerOver={() => setHovered(true)}  // Set cursor to pointer on hover
-                onPointerOut={() => setHovered(false)} 
-                 />
+                <primitive
+                    object={scene}
+                    position={[0, -6, -0.5]}
+                    onClick={(e) => handleClick(e.object.name)}
+                    onPointerOver={() => setHovered(true)}  // Set cursor to pointer on hover
+                    onPointerOut={() => setHovered(false)}
+                />
             </Canvas>
 
         </div>

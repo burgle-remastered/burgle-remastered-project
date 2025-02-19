@@ -40,6 +40,13 @@ export default function IngredientTaskList() {
   }, []);
 
   useEffect(() => {
+    // Set background image for Home page (image from public/images)
+    document.body.style.backgroundColor = '#3B7A9B';
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+  }, []);
+
+  useEffect(() => {
     const fetchBurger = async () => {
       try {
         const date = getDate()
@@ -83,7 +90,7 @@ export default function IngredientTaskList() {
       <Canvas style={{ width: 900, height: 500 }} camera={[5, 4, 5]}>
         <ambientLight intensity={0.5} />
         <directionalLight position={[5, 5, 5]} intensity={1} />
-       <primitive object={scene} position={[0, 0, 0]} rotation={[0.5, 0, 0]}/>
+        <primitive object={scene} position={[0, 0, 0]} rotation={[0.5, 0, 0]} />
       </Canvas>
       {burger ? (
         <>

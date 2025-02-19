@@ -15,7 +15,7 @@ export default function Landing() {
 
     useEffect(() => {
         // Set background image for Home page (image from public/images)
-        document.body.style.backgroundImage = 'url(../props/Backgrounds/Burgle_Landing.jpg)';
+        document.body.style.backgroundColor = '#EDC06D';
         document.body.style.backgroundSize = 'cover';
         document.body.style.backgroundPosition = 'center';
     }, []);
@@ -42,12 +42,14 @@ export default function Landing() {
             <BurgrLogo />
 
             <div>
-                <Burger />
-                {/* <Truck /> */}
+                {/* <Burger /> */}
+                <Truck />
                 {/* make it so they are both not highlighted. Now that the routes are in place, these links can use the paths established by the routes to navigate the site! */}
                 {/* conditional render, function inside "to" tag will check if there's a user logged in. if user isn't logged in, both buttons lead to log in page. If user is logged in, buttons will lead to their respective pages   */}
-                <button id="kitchenButton" onClick={() => handleClick('kitchen')}>Go to Kitchen!</button>
-                <button id="accountButton" onClick={() => handleClick('account')}>Account</button>
+                <div className="buttonPair">
+                    <button id="kitchenButton" className="button" onClick={() => handleClick('kitchen')}>Go to Kitchen!</button>
+                    <button id="accountButton" className="button" onClick={() => handleClick('account')}>Account</button>
+                </div>
             </div>
         </>
     )
