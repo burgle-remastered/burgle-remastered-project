@@ -12,7 +12,11 @@ export default function LoginPage() {
     axios.defaults.withCredentials = true
 
     // returns the user to their homepage 
-    if (currentUser) return <Navigate to={`/users/${currentUser.id}`} />;
+    useEffect(() => {
+        if (currentUser) {
+            navigate(`/users/${currentUser.id}`);
+        }
+    }, [currentUser, navigate]);
 
     useEffect(() => {
         // Set background image for Home page (image from public/images)
@@ -20,6 +24,8 @@ export default function LoginPage() {
         document.body.style.backgroundSize = 'cover';
         document.body.style.backgroundPosition = 'center';
     }, []);
+
+
 
     // handlesubmit function to log the user in. 
     const handleSubmit = async (event) => {
@@ -30,7 +36,7 @@ export default function LoginPage() {
         const existingUser = Cookies.get('currentUser')
         if (existingUser) {
             setTimeout(() => {
-                navigate(`/users/${existingUser[0].user_id}`)
+                navigate(`/users/${JSON.parse(existingUser).user_id}`)
             }, 100)
         }
         try {
@@ -52,6 +58,9 @@ export default function LoginPage() {
     };
     return (
         <>
+         {currentUser ? (
+                <Navigate to={`/users/${currentUser.id}`} />
+            ) : (
             <div className="logInForm">
                 <form onSubmit={handleSubmit} aria-labelledby="login-heading" className="logInForm">
                     <h2 id="login-heading" className="header2">
@@ -81,8 +90,10 @@ export default function LoginPage() {
                         />
                     </div>
                     <button className="button" id="logInButton">Log In!</button>
+                    {errorText && <p className="error">{errorText}</p>}
                 </form>
             </div>
+            )}
         </>
     )
 }

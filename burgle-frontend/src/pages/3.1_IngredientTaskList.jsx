@@ -20,7 +20,6 @@ export default function IngredientTaskList() {
   const navigate = useNavigate()
 
   const { scene } = useGLTF(`http://127.0.0.1:5000/static/ThreeJSModels/${component}.glb`);
-  console.log(scene)
 
   const burgerComponent = component.toLowerCase();
 

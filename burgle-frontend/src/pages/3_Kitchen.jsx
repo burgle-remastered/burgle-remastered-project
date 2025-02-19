@@ -129,7 +129,6 @@ export default function Kitchen() {
     };
 
     const handleOpen = async (component, value) => {
-        console.log("Selected part:", component);
         navigate(`/users/${currentUser.id}/${burger.id}/${component}`)
     }
 
@@ -156,28 +155,28 @@ export default function Kitchen() {
                 {/* Template menu */}
                 <div id="userMenu">
                     <h3>Menu</h3>
-                    <ul class='recipe_container'>
+                    <ul className='recipe_container'>
                     {templateBurgers.length > 0 ? (
-                        templateBurgers.map((burger) => <li class='recipe_container'key={burger.id}>{
-                            <div class='Recipe'>
-                                <h4 class='ingredient'>Burger From: {burger.created_at}!</h4>
-                                <ul class='ingredient'>Top Bun: {burger.top_bun}</ul>
-                                <ul class='ingredient'>Meat: {burger.meat}</ul>
-                                <ul class='ingredient'>Cheese: {burger.cheese}</ul>
-                                <ul class='ingredient'>Sauce: {burger.sauce}</ul>
-                                {burger.pickles && (<ul class='ingredient'>Pickles: {burger.pickles}</ul>)}
-                                {burger.lettuce && (<ul class='ingredient'>Lettuce: {burger.lettuce}</ul>)}
-                                {burger.tomato && (<ul class='ingredient'>Tomato: {burger.tomato}</ul>)}
-                                <ul class='ingredient'>Bottom Bun: {burger.bottom_bun}</ul>
+                        templateBurgers.map((burger) => <li className='recipe_container'key={burger.id}>{
+                            <div className='Recipe'>
+                                <h4 className='ingredient'>Burger From: {burger.created_at}!</h4>
+                                <ul className='ingredient'>Top Bun: {burger.top_bun}</ul>
+                                <ul className='ingredient'>Meat: {burger.meat}</ul>
+                                <ul className='ingredient'>Cheese: {burger.cheese}</ul>
+                                <ul className='ingredient'>Sauce: {burger.sauce}</ul>
+                                {burger.pickles && (<ul className='ingredient'>Pickles: {burger.pickles}</ul>)}
+                                {burger.lettuce && (<ul className='ingredient'>Lettuce: {burger.lettuce}</ul>)}
+                                {burger.tomato && (<ul className='ingredient'>Tomato: {burger.tomato}</ul>)}
+                                <ul className='ingredient'>Bottom Bun: {burger.bottom_bun}</ul>
                             </div>
                         }</li>)
                     ) : (
-                        <p>No burgers found</p>
+                        <p>No template burgers :( </p>
                     )}</ul>
                 </div>
             
                 {/* Burger */}
-                {error && <p>{error}</p>}
+                {error && <p>You haven't made a burger today yet!</p>}
 
                 <div id="burgerSpace">
                     {burger ? (

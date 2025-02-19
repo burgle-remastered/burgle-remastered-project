@@ -42,7 +42,6 @@ export default function SignUp() {
                 password: formObject.password
             };
 
-            console.log("User to add:", userData)
             const response = await axios.post('http://127.0.0.1:5000/auth/register', userData, {
                 withCredentials: true, headers: {
                     'Content-Type': 'application/json', // Make sure it's set to JSON

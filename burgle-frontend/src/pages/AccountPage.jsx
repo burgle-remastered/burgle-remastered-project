@@ -58,7 +58,7 @@ export default function AccountPage() {
     try {
       const user = JSON.parse(Cookies.get('currentUser'))
       const userData = {
-        user_id: user[0].user_id,
+        user_id: user.user_id,
         username: formObject.username || user.username,
         email: formObject.email || user.email,
         password: formObject.password || user.password
@@ -131,23 +131,23 @@ export default function AccountPage() {
       <div className="text">
         <button onClick={() => navigate('/')}>Back</button>
         <h1>All Burgers</h1>
-        <ul class='recipe_container'>
-          {error && <p>Error loading burgers: {error}</p>}
+        <ul className='recipe_container'>
+          {error && <p className="noBurger">You haven't made any burgers yet!</p>}
           {burgers.length > 0 ? (
-            burgers.map((burger) => <li class='recipe_container'key={burger.id}>  <div class='Recipe'>
-              <h4 class='ingredient'>Burger From: {burger.created_at}!</h4>
-              <ul class='ingredient'>Top Bun: {burger.top_bun}</ul>
-              <ul class='ingredient'>Meat: {burger.meat}</ul>
-              <ul class='ingredient'>Cheese: {burger.cheese}</ul>
-              <ul class='ingredient'>Sauce: {burger.sauce}</ul>
-              {burger.pickles && (<ul class='ingredient'>Pickles: {burger.pickles}</ul>)}
-              {burger.lettuce && (<ul class='ingredient'>Lettuce: {burger.lettuce}</ul>)}
-              {burger.tomato && (<ul class='ingredient'>Tomato: {burger.tomato}</ul>)}
-              <ul class='ingredient'>Bottom Bun: {burger.bottom_bun}</ul>
+            burgers.map((burger) => <li className='recipe_container'key={burger.id}>  <div className='Recipe'>
+              <h4 className='ingredient'>Burger From: {burger.created_at}!</h4>
+              <ul className='ingredient'>Top Bun: {burger.top_bun}</ul>
+              <ul className='ingredient'>Meat: {burger.meat}</ul>
+              <ul className='ingredient'>Cheese: {burger.cheese}</ul>
+              <ul className='ingredient'>Sauce: {burger.sauce}</ul>
+              {burger.pickles && (<ul className='ingredient'>Pickles: {burger.pickles}</ul>)}
+              {burger.lettuce && (<ul className='ingredient'>Lettuce: {burger.lettuce}</ul>)}
+              {burger.tomato && (<ul className='ingredient'>Tomato: {burger.tomato}</ul>)}
+              <ul className='ingredient'>Bottom Bun: {burger.bottom_bun}</ul>
             </div>
             </li>)
           ) : (
-            <p>No burgers found</p>
+            <p className="noBurger">No burgers found</p>
           )}
         </ul>
         <ul>

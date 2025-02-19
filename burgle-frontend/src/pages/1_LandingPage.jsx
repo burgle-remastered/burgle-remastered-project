@@ -7,7 +7,7 @@ import Truck from "../props/3D_props/TruckProp";
 import axios from "axios"
 import Cookies from 'js-cookie'
 
-
+axios.defaults.withCredentials = true
 export default function Landing() {
     const navigate = useNavigate();
     const [errorText, setErrorText] = useState('');
@@ -21,7 +21,7 @@ export default function Landing() {
     }, []);
 
 
-    axios.defaults.withCredentials = true
+    
     /* here we'd:
     1. check if the user is logged in.
     2. if yes, the buttons go to their acc, or their kitchen with their templates and current burger
@@ -30,10 +30,10 @@ export default function Landing() {
     const handleClick = (button) => {
         const existingUser = Cookies.get('currentUser')
         if (existingUser) {
-            const existingUserData = JSON.parse(Cookies.get('currentUser'))
+            const existingUserData = JSON.parse(existingUser)
             setTimeout(() => {
-                if (button === 'kitchen') navigate(`/users/${existingUserData[0].user_id}/kitchen`)
-                if (button === 'account') navigate(`/users/${existingUserData[0].user_id}`)
+                if (button === 'kitchen') navigate(`/users/${existingUserData.user_id}/kitchen`)
+                if (button === 'account') navigate(`/users/${existingUserData.user_id}`)
             }, 100)
         } else navigate('/no-acc')
     }

@@ -12,22 +12,13 @@ const BurgerProp = ({ onPartClick = () => { } }) => {
     const { scene } = useGLTF('http://127.0.0.1:5000/static/ThreeJSModels/FinalBurglBurgerModel.glb');
     // State to track the part of the model the user's cursor is "touching"
     const [hovered, setHovered] = useState(null);
-    // State to track the part of the model that the user clicked 
-    const [clicked, setClicked] = useState(null);
     const nav = useNavigate();
 
     useCursor(hovered);
 
     const handleClick = (part) => {
-        console.log("Clicked part:", part);
         onPartClick(part);
-
     };
-
-
-    console.log("onPartClick in BurgerProp:", onPartClick);
-
-
 
     return (
         <div id='3DBurgerContainer' >
