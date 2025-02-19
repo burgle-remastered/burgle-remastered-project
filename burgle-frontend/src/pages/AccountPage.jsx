@@ -131,18 +131,19 @@ export default function AccountPage() {
       <div className="text">
         <button onClick={() => navigate('/')}>Back</button>
         <h1>All Burgers</h1>
-        <ul>
+        <ul class='recipe_container'>
           {error && <p>Error loading burgers: {error}</p>}
           {burgers.length > 0 ? (
-            burgers.map((burger) => <li key={burger.id}>  <div>
-              <ul>{burger.top_bun}</ul>
-              <ul>{burger.meat}</ul>
-              <ul>{burger.cheese}</ul>
-              <ul>{burger.sauce}</ul>
-              <ul>{burger.pickles}</ul>
-              <ul>{burger.lettuce}</ul>
-              <ul>{burger.tomato}</ul>
-              <ul>{burger.bottom_bun}</ul>
+            burgers.map((burger) => <li class='recipe_container'key={burger.id}>  <div class='Recipe'>
+              <h4 class='ingredient'>Burger From: {burger.created_at}!</h4>
+              <ul class='ingredient'>Top Bun: {burger.top_bun}</ul>
+              <ul class='ingredient'>Meat: {burger.meat}</ul>
+              <ul class='ingredient'>Cheese: {burger.cheese}</ul>
+              <ul class='ingredient'>Sauce: {burger.sauce}</ul>
+              {burger.pickles && (<ul class='ingredient'>Pickles: {burger.pickles}</ul>)}
+              {burger.lettuce && (<ul class='ingredient'>Lettuce: {burger.lettuce}</ul>)}
+              {burger.tomato && (<ul class='ingredient'>Tomato: {burger.tomato}</ul>)}
+              <ul class='ingredient'>Bottom Bun: {burger.bottom_bun}</ul>
             </div>
             </li>)
           ) : (
