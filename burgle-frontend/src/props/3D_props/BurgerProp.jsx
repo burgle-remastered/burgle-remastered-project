@@ -16,11 +16,14 @@ const BurgerProp = ({ onPartClick = () => { } }) => {
     const [clicked, setClicked] = useState(null);
     const nav = useNavigate();
 
+    useCursor(hovered);
+
     const handleClick = (part) => {
         console.log("Clicked part:", part);
         onPartClick(part);
 
     };
+
 
     console.log("onPartClick in BurgerProp:", onPartClick);
 
@@ -41,7 +44,13 @@ const BurgerProp = ({ onPartClick = () => { } }) => {
                 <ambientLight intensity={0.5} />
                 <directionalLight position={[5, 5, 5]} intensity={1} />
                 {/* Model */}
-                <primitive object={scene} position={[0, -6, -0.5]} onClick={(e) => handleClick(e.object.name)} />
+                <primitive 
+                object={scene} 
+                position={[0, -6, -0.5]} 
+                onClick={(e) => handleClick(e.object.name)}
+                onPointerOver={() => setHovered(true)}  // Set cursor to pointer on hover
+                onPointerOut={() => setHovered(false)} 
+                 />
             </Canvas>
 
         </div>

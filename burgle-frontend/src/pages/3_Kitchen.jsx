@@ -144,17 +144,11 @@ export default function Kitchen() {
     return (
         <>
             <h2> Kitchen</h2>
-            <h3>Menu</h3>
-            <ul>
-                {error && <p>{error}</p>}
+            <div id="kitchenSpace" className="flex flex-row h-64">
 
-                <div>
-                {burger ? (
-                <BurgerProp onPartClick={handleOpen} />
-                ) : (
-                <p>Loading burger...</p> // Placeholder or loading message
-                )}
-                </div>
+                {/* Template menu */}
+            <div id="userMenu">
+            <h3>Menu</h3>
                 {templateBurgers.length > 0 ? (
                     templateBurgers.map((burger) => <li key={burger.id}>{
                         <div>
@@ -171,12 +165,31 @@ export default function Kitchen() {
                 ) : (
                     <p>No burgers found</p>
                 )}
-            </ul>
+                </div>
+
+                {/* Burger */}
+                {error && <p>{error}</p>}
+
+                    <div id="burgerSpace">
+                    {burger ? (
+                    <BurgerProp onPartClick={handleOpen} />
+                    ) : (
+                    <p>Loading burger...</p> // Placeholder or loading message
+                    )}
+                    </div>
+
+            </div>
+            
+          
+            
+               
+               
+        
             <button onClick={() => navigate('/')}>Back</button>
             {burger && (
                 <div className="burgerDetails">
                     <h3>Your Burger</h3>
-                    <button onClick={() => handleOpen("top_bun", burger.top_bun)} >Top Bun: {burger.top_bun}</button>
+                    {/* <button onClick={() => handleOpen("top_bun", burger.top_bun)} >Top Bun: {burger.top_bun}</button>
                     <button onClick={() => handleOpen("meat", burger.meat)} >Meat: {burger.meat}</button>
                     <button onClick={() => handleOpen("cheese", burger.cheese)} >Cheese: {burger.cheese}</button>
                     <button onClick={() => handleOpen("sauce", burger.sauce)} >Sauce: {burger.sauce}</button>
@@ -189,7 +202,7 @@ export default function Kitchen() {
                     {burger.tomato && (
                         <button onClick={() => handleOpen("tomato", burger.tomato)} >Tomato: {burger.tomato}</button>
                     )}
-                    <button onClick={() => handleOpen("bottom_bun", burger.bottom_bun)} >Bottom Bun: {burger.bottom_bun}</button>
+                    <button onClick={() => handleOpen("bottom_bun", burger.bottom_bun)} >Bottom Bun: {burger.bottom_bun}</button> */}
                     <button >Spoon Count: {burger.spoon_count}</button>
 
                 </div>
