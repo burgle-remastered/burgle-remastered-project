@@ -9,6 +9,7 @@ import { Canvas } from "@react-three/fiber";
 import CurrentUserContext from "../contexts/current-user-context";
 // BURGER PROP
 import BurgerProp from "../props/3D_props/BurgerProp";
+import { div } from "three/src/nodes/TSL.js";
 
 export default function IngredientTaskList() {
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext)
@@ -40,7 +41,7 @@ export default function IngredientTaskList() {
 
   useEffect(() => {
     // Set background image for Home page (image from public/images)
-    document.body.style.backgroundColor = '#3B7A9B';
+    document.body.style.backgroundColor = '#EDC06D';
     document.body.style.backgroundSize = 'cover';
     document.body.style.backgroundPosition = 'center';
   }, []);
@@ -82,10 +83,13 @@ export default function IngredientTaskList() {
 
   return (
     <>
-      <button onClick={() => navigate(`/users/${currentUser[0].user_id}/kitchen`)}>Back</button>
+    <div className="kitchenHeader">
+      <button className="backButton button" onClick={() => navigate(`/users/${currentUser[0].user_id}/kitchen`)}>Back</button>
       <h2>Ingredient Task List</h2>
+    </div>
       {/* burger prop */}
-      <h2>Part Details: {component}</h2>
+      {/* make conditional to show "label" ex top bun -> morning routine */}
+      {/* <h2>Part Details: {component}</h2> */}
       <Canvas style={{ width: 900, height: 500 }} camera={[5, 4, 5]}>
         <ambientLight intensity={0.5} />
         <directionalLight position={[5, 5, 5]} intensity={1} />
@@ -94,17 +98,24 @@ export default function IngredientTaskList() {
       {burger ? (
         <>
           {!isEditing ? (
-            <button onClick={() => setIsEditing(true)}>{burger[burgerComponent]}</button>
+            <div>
+              <p className="emptyBurgerMessage">Tasks:</p>
+              <button  className="button" onClick={() => setIsEditing(true)}>{burger[burgerComponent]}</button>
+            </div>
           ) : (
             <div>
+              <div className="inputBlock">
               <input
+              name="update"
+              id="update"
                 type="text"
                 value={newValue}
                 onChange={(e) => setNewValue(e.target.value)}
                 placeholder={`New value for ${burgerComponent}`}
               />
-              <button onClick={() => handleUpdateBurger(burgerComponent)}>Update</button>
-              <button onClick={() => setIsEditing(false)}>Cancel</button>
+              </div>
+              <button className="button" onClick={() => handleUpdateBurger(burgerComponent)}>Update</button>
+              <button className="button" onClick={() => setIsEditing(false)}>Cancel</button>
             </div>
           )}
         </>

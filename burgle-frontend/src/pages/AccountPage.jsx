@@ -129,8 +129,10 @@ export default function AccountPage() {
   return (
     <>
       <div className="text">
-        <button onClick={() => navigate('/')}>Back</button>
+        <div className="kitchenHeader">
+        <button  className="button backButton" onClick={() => navigate('/')}>Back</button>
         <h1>All Burgers</h1>
+        </div>
         <ul className='recipe_container'>
           {error && <p className="noBurger">You haven't made any burgers yet!</p>}
           {burgers.length > 0 ? (
@@ -151,14 +153,15 @@ export default function AccountPage() {
           )}
         </ul>
         <ul>
-          <div className="Update-Form">
-            <form onSubmit={handleUpdate} aria-labelledby="update-heading">
+        <div className="Update-Form">
+          <form onSubmit={handleUpdate} aria-labelledby="update-heading">
               <h2 id="update-heading" className="header2">
                 Fix Your Account, Toots!
               </h2>
+           <div className="accountInputs">
 
-              <div className="usernameBlock">
-                <label htmlFor="username" className="username">Username</label>
+              <div className="inputBlock">
+                <label htmlFor="username" className="username">Username: </label>
                 <input
                   type="text"
                   autoComplete="username"
@@ -167,10 +170,10 @@ export default function AccountPage() {
                   placeholder="Enter your username"
                   value={username} // Bind the state
                   onChange={(e) => setUsername(e.target.value)} // Update state on change
-                />
+                  />
               </div>
-              <div className="emailBlock">
-                <label htmlFor="email" className="email">Email</label>
+              <div className="inputBlock">
+                <label htmlFor="email" className="email">Email: </label>
                 <input
                   type="text"
                   autoComplete="email"
@@ -179,11 +182,11 @@ export default function AccountPage() {
                   placeholder="Enter your email"
                   value={email} // Bind the state
                   onChange={(e) => setEmail(e.target.value)} // Update state on change
-                />
+                  />
               </div>
 
-              <div className="passwordBlock">
-                <label htmlFor="password" className="password">Password</label>
+              <div className="inputBlock">
+                <label htmlFor="password" className="password">Password: </label>
                 <input
                   type="password"
                   autoComplete="current-password"
@@ -192,14 +195,19 @@ export default function AccountPage() {
                   placeholder="Enter your password"
                   value={password} // Bind the state
                   onChange={(e) => setPassword(e.target.value)} // Update state on change
-                />
+                  />
               </div>
+          </div>
 
-              <button>Update!</button>
+              <button className="button">Update!</button>
             </form>
           </div>
-          <button onClick={() => handleDelete()}>Delete Account</button>
-          <button onClick={() => handleSignOut()}>Sign Out</button>
+
+          <div className="buttonPair">
+          <button className="button"onClick={() => handleDelete()}>Delete Account</button>
+          <button className="button"onClick={() => handleSignOut()}>Sign Out</button>
+          </div>
+         
         </ul>
       </div>
     </>

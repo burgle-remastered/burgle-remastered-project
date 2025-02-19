@@ -60,19 +60,28 @@
 
 /* general logo and body fonts/styles */
 h1 {
+  color: #A22C29;
   margin-top: 5px;
   margin-bottom: 5px;
   font-family: "Telegraphem";
   font-size: 120px;
 }
 
-h2 {
-  color: #A22C29;
+h2, h3 {
+  color: #C43331;
   margin-top: 5px;
   margin-bottom: 5px;
-  padding: 20px;
+  padding: 10px;
   font-family: "Telegraphem";
   font-size: 70px;
+}
+
+h4{
+  color: #C43331;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 5px;
+  font-size: 25px;
 }
 
 #burgerLogo {
@@ -82,6 +91,13 @@ h2 {
 
 body {
   font-family: "TypeWriter";
+  font-size: 20px;
+}
+
+ul {
+  margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 /* Landing, Login and SignUp Pages */
@@ -90,6 +106,7 @@ body {
   font-size: 20px;
   color: #D6D5C9;
   background-color: #C43331;
+  margin: 2px;
 }
 
 .button:hover {
@@ -145,6 +162,7 @@ body {
   background-color: #e29a3b;
   font-family: "TypeWriter";
   font-size: 30px;
+  margin: 2px
 }
 
 #email::placeholder {
@@ -156,6 +174,7 @@ body {
   background-color: #e29a3b;
   font-family: "TypeWriter";
   font-size: 30px;
+  margin: 2px
 }
 
 #username::placeholder {
@@ -167,6 +186,7 @@ body {
   background-color: #e29a3b;
   font-family: "TypeWriter";
   font-size: 30px;
+  margin: 2px
 }
 
 #password::placeholder {
@@ -196,34 +216,189 @@ body {
   margin-top: 20px;
 }
 
-.recipe_container{
+/* Kitchen CSS */
+.kitchenHeader {
   display: flex;
   flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.backButton {
+  position: absolute;
+    top: 50px;
+    left: 50px;
+}
+
+#kitchenWelcome {
+  color: #C43331;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 20px;
+  font-family: "Telegraphem";
+  font-size: 50px;
+}
+
+#burgerAndMenu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.recipe_container{
+  margin: 0px;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
   flex-wrap: wrap;
+  overflow-y: auto;
+  max-height: 375px;
 }
 
 .Recipe {
-  border: black, 2px, solid;
+  padding: 10px;
+  border-radius: 15px;
+  box-shadow: 5px 5px 5px 4px #c46f29;
   background-color: #e29a3b;
   width:200px;
   display: flex;
   flex-direction: column;
   margin: 10px;
   flex-wrap: wrap;
+  
 }
 
+
 .ingredient{
+  padding: 5px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
 #userMenu{
-  border: black, 2px, solid;
+  margin: 20px;
+  min-width: 300px;
+  min-height: 150px;
+  max-width: 800px;
+  max-height: 750px;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: inset 0 0 0 4px #A22C29; /* Inner border */
   background-color: wheat;
 }
+
+.emptyMessage {
+  margin: 0;
+  color: #C43331;
+  font-size: 25px;
+}
+
 
 .noBurger{
   display: flex;
   margin: 10px;
+}
+
+#top_bun {
+  color: #521714;
+  background-color: #e29a3b;
+  font-family: "TypeWriter";
+  font-size: 30px;
+}
+
+#top_bun::placeholder {
+  color: #884f21;
+}
+
+#meat {
+  color: #521714;
+  background-color: #e29a3b;
+  font-family: "TypeWriter";
+  font-size: 30px;
+}
+
+#meat::placeholder {
+  color: #884f21;
+}
+
+#cheese {
+  color: #521714;
+  background-color: #e29a3b;
+  font-family: "TypeWriter";
+  font-size: 30px;
+}
+
+#cheese::placeholder {
+  color: #884f21;
+}
+
+#sauce {
+  color: #521714;
+  background-color: #e29a3b;
+  font-family: "TypeWriter";
+  font-size: 30px;
+}
+
+#sauce::placeholder {
+  color: #884f21;
+}
+
+#bottom_bun {
+  color: #521714;
+  background-color: #e29a3b;
+  font-family: "TypeWriter";
+  font-size: 30px;
+}
+
+#bottom_bun::placeholder {
+  color: #884f21;
+}
+
+#spoon_count {
+  color: #521714;
+  background-color: #e29a3b;
+  font-family: "TypeWriter";
+  font-size: 30px;
+}
+
+#spoon_count::placeholder {
+  color: #884f21;
+}
+
+.emptyBurgerMessage {
+  color: #C43331;
+  margin-bottom: 10px;
+  font-size: 30px;
+  text-decoration: underline;
+}
+
+.burgerInputs {
+  padding: 20px;
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+#update {
+  color: #521714;
+  background-color: #e29a3b;
+  font-family: "TypeWriter";
+  font-size: 30px;
+}
+
+#update::placeholder {
+  color: #884f21;
+}
+
+/* Account Page */
+.accountInputs {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }

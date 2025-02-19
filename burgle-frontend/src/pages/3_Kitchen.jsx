@@ -33,7 +33,7 @@ export default function Kitchen() {
 
     useEffect(() => {
         // Set background image for Home page (image from public/images)
-        document.body.style.backgroundColor = '#3B7A9B';
+        document.body.style.backgroundColor = '#EDC06D';
         document.body.style.backgroundSize = 'cover';
         document.body.style.backgroundPosition = 'center';
     }, []);
@@ -149,15 +149,28 @@ export default function Kitchen() {
 
     return (
         <>
-            <h2> Kitchen</h2>
+            <div className="kitchenHeader">
+                <div className="backButton">
+                <button className="button"onClick={() => navigate('/')}>Back to Truck</button>
+                </div>
+            
+            <h1> Kitchen</h1>
+            </div>
+
+            <h2 id="kitchenWelcome" className="header2">
+                            Welcome Back to the Kitchen, Toots!
+                        </h2>
+            
             <div id="kitchenSpace" className="flex flex-row h-64">
 
                 {/* Template menu */}
+                <div id="burgerAndMenu">
                 <div id="userMenu">
+                    <div id="menuLine">
                     <h3>Menu</h3>
-                    <ul className='recipe_container'>
+                    <div className='recipe_container'>
                     {templateBurgers.length > 0 ? (
-                        templateBurgers.map((burger) => <li className='recipe_container'key={burger.id}>{
+                        templateBurgers.map((burger) => <li className='recipe_container' key={burger.id}>{
                             <div className='Recipe'>
                                 <h4 className='ingredient'>Burger From: {burger.created_at}!</h4>
                                 <ul className='ingredient'>Top Bun: {burger.top_bun}</ul>
@@ -171,121 +184,97 @@ export default function Kitchen() {
                             </div>
                         }</li>)
                     ) : (
-                        <p>No template burgers :( </p>
-                    )}</ul>
+                        <p className="emptyMessage" >No template burgers :(</p>
+                    )}</div>
+
+                    </div>
                 </div>
             
                 {/* Burger */}
-                {error && <p>You haven't made a burger today yet!</p>}
 
                 <div id="burgerSpace">
                     {burger ? (
-                        <BurgerProp onPartClick={handleOpen} />
+                        <div>
+                         <BurgerProp onPartClick={handleOpen} />
+                         <button className="button" >Spoon Count: {burger.spoon_count}</button>
+                         <button className="button"onClick={() => handleTemplate()}>Add as template</button>
+                        </div>
+                       
                     ) : (
-                        <p>Loading burger...</p> // Placeholder or loading message
-                    )}
-                </div>
-
-            </div>
-
-
-
-
-
-
-            <button onClick={() => navigate('/')}>Back</button>
-            {burger && (
-                <div className="burgerDetails">
-                    <h3>Your Burger</h3>
-                    {/* <button onClick={() => handleOpen("top_bun", burger.top_bun)} >Top Bun: {burger.top_bun}</button>
-                    <button onClick={() => handleOpen("meat", burger.meat)} >Meat: {burger.meat}</button>
-                    <button onClick={() => handleOpen("cheese", burger.cheese)} >Cheese: {burger.cheese}</button>
-                    <button onClick={() => handleOpen("sauce", burger.sauce)} >Sauce: {burger.sauce}</button>
-                    {burger.pickles && (
-                        <button onClick={() => handleOpen("pickles", burger.pickles)} >Pickles: {burger.pickles}</button>
-                    )}
-                    {burger.lettuce && (
-                        <button onClick={() => handleOpen("lettuce", burger.lettuce)} >Lettuce: {burger.lettuce}</button>
-                    )}
-                    {burger.tomato && (
-                        <button onClick={() => handleOpen("tomato", burger.tomato)} >Tomato: {burger.tomato}</button>
-                    )}
-                    <button onClick={() => handleOpen("bottom_bun", burger.bottom_bun)} >Bottom Bun: {burger.bottom_bun}</button> */}
-                    <button >Spoon Count: {burger.spoon_count}</button>
-
-                </div>
-            )}
-            <button onClick={() => handleTemplate()}>Add as template</button>
-
-            <div className="burgerForm">
+                        // <p>Loading burger...</p> // Placeholder or loading message
+                        <div>
+                        {error && <h4 className="emptyBurgerMessage">You haven't made a burger today yet!</h4>}
+                        <div className="burgerForm">
                 {!burger && (
                     <form onSubmit={handleSubmit} aria-labelledby="burger-heading">
-                        <h2 id="burger-heading" className="header2">
-                            Welcome Back to the Kitchen, Toots!
-                        </h2>
+                       
 
-                        <div className="top_bunBlock">
-                            <label htmlFor="top_bun" className="top_bun">top_bun</label>
+                        <div className="burgerInputs">
+                        
+                        <div className="inputBlock">
+                            <label htmlFor="top_bun" className="top_bun">Top Bun: </label>
                             <input
                                 type="text"
                                 autoComplete="top_bun"
                                 id="top_bun"
                                 name="top_bun"
-                                placeholder="Enter your morning routine"
+                                placeholder="morning routine"
                             />
                         </div>
 
-                        <div className="meatBlock">
-                            <label htmlFor="meat" className="meat">meat</label>
+                        <div className="inputBlock">
+                            <label htmlFor="meat" className="meat">Meat: </label>
                             <input
                                 type="meat"
                                 autoComplete="current-meat"
                                 id="meat"
                                 name="meat"
-                                placeholder="Enter your big task"
+                                placeholder="focus 4 2day"
                             />
                         </div>
-                        <div className="cheeseBlock">
-                            <label htmlFor="cheese" className="cheese">cheese</label>
+                        <div className="inputBlock">
+                            <label htmlFor="cheese" className="cheese">Cheese: </label>
                             <input
                                 type="cheese"
                                 autoComplete="current-cheese"
                                 id="cheese"
                                 name="cheese"
-                                placeholder="Enter your relaxation"
+                                placeholder="mandatory treat!!"
                             />
                         </div>
-                        <div className="sauceBlock">
-                            <label htmlFor="sauce" className="sauce">sauce</label>
+                        <div className="inputBlock">
+                            <label htmlFor="sauce" className="sauce">Sauce: </label>
                             <input
                                 type="sauce"
                                 autoComplete="current-sauce"
                                 id="sauce"
                                 name="sauce"
-                                placeholder="Enter your reflection"
+                                placeholder="reflection exercise"
                             />
                         </div>
-                        <div className="bottom_bunBlock">
-                            <label htmlFor="bottom_bun" className="bottom_bun">bottom_bun</label>
+                        <div className="inputBlock">
+                            <label htmlFor="bottom_bun" className="bottom_bun">Bottom Bun: </label>
                             <input
                                 type="bottom_bun"
                                 autoComplete="current-bottom_bun"
                                 id="bottom_bun"
                                 name="bottom_bun"
-                                placeholder="Enter your night routine"
+                                placeholder="night routine"
                             />
                         </div>
-                        <div className="spoon_countBlock">
-                            <label htmlFor="spoon_count" className="spoon_count">spoon_count</label>
+                        <div className="inputBlock">
+                            <label htmlFor="spoon_count" className="spoon_count">Spoon Count: </label>
                             <input
                                 type="spoon_count"
                                 autoComplete="current-spoon_count"
                                 id="spoon_count"
                                 name="spoon_count"
-                                placeholder="Enter your spoons"
+                                placeholder="energy level (in spoons)"
                             />
                         </div>
-                        <button>Create Burger!</button>
+
+                        </div>
+                        <button className="button">Create Burger!</button>
                     </form>
                 )}
                 {/* Dynamic form for additional components */}
@@ -294,7 +283,7 @@ export default function Kitchen() {
                         <h3>Add Extra Components</h3>
                         {!burger.pickles && (
                             <div className="picklesBlock">
-                                <label htmlFor="pickles">Pickles</label>
+                                <label htmlFor="pickles">Pickles: </label>
                                 <input
                                     type="text"
                                     id="pickles"
@@ -302,7 +291,7 @@ export default function Kitchen() {
                                     onChange={(e) => setPickles(e.target.value)}
                                     placeholder="Add pickles"
                                 />
-                                <button type="button" onClick={() => handleUpdateBurger('pickles', pickles)}>
+                                <button className="button" type="button" onClick={() => handleUpdateBurger('pickles', pickles)}>
                                     Add Pickles
                                 </button>
                             </div>
@@ -318,7 +307,7 @@ export default function Kitchen() {
                                         onChange={(e) => setLettuce(e.target.value)}
                                         placeholder="Add lettuce"
                                     />
-                                    <button type="button" onClick={() => handleUpdateBurger('lettuce', lettuce)}>
+                                    <button className="button" type="button" onClick={() => handleUpdateBurger('lettuce', lettuce)}>
                                         Add Lettuce
                                     </button>
                                 </div>
@@ -335,7 +324,7 @@ export default function Kitchen() {
                                     onChange={(e) => setTomato(e.target.value)}
                                     placeholder="Add tomato"
                                 />
-                                <button type="button" onClick={() => handleUpdateBurger('tomato', tomato)}>
+                                <button className="button" type="button" onClick={() => handleUpdateBurger('tomato', tomato)}>
                                     Add Tomato
                                 </button>
                             </div>
@@ -344,6 +333,13 @@ export default function Kitchen() {
                     )}
                 </div>
             </div>
+                        </div>
+                        
+                    )}
+                </div>
+
+            </div>
+                </div>
         </>
     )
 }
