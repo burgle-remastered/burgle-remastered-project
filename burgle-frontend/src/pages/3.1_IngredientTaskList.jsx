@@ -22,6 +22,7 @@ export default function IngredientTaskList() {
   const { scene } = useGLTF(`http://127.0.0.1:5000/static/ThreeJSModels/${component}.glb`);
   console.log(scene)
 
+  const burgerComponent = component.toLowerCase();
 
   const getDate = () => {
     const today = new Date();
@@ -79,10 +80,10 @@ export default function IngredientTaskList() {
       <h2>Ingredient Task List</h2>
       {/* burger prop */}
       <h2>Part Details: {component}</h2>
-      <Canvas style={{ width: 900, height: 500 }} camera={[10, 10, 10]}>
+      <Canvas style={{ width: 900, height: 500 }} camera={[5, 4, 5]}>
         <ambientLight intensity={0.5} />
         <directionalLight position={[5, 5, 5]} intensity={1} />
-        {isolatedPart && <primitive object={isolatedPart} position={[0, 0, 0]} />}
+       <primitive object={scene} position={[0, 0, 0]} rotation={[0.5, 0, 0]}/>
       </Canvas>
       {burger ? (
         <>
