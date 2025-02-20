@@ -55,7 +55,7 @@ export default function Kitchen() {
                     headers: {
                         "Content-Type": "application/json",
                         Accept: "application/json", // We're telling the server we expect JSON
-                    }, body: { user: user[0].user_id }
+                    }, body: { user: user.user_id }
                 });
                 setBurger(response.data)
             } catch (err) {
@@ -87,9 +87,12 @@ export default function Kitchen() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        console.log(event.target)
         setError('');
+        console.log('clicked')
         const formData = new FormData(event.target)
         const formObject = Object.fromEntries(formData)
+        console.log(formObject)
 
         try {
             const user = JSON.parse(Cookies.get('currentUser'))
@@ -100,8 +103,9 @@ export default function Kitchen() {
                 "sauce": formObject.sauce,
                 "bottom_bun": formObject.bottom_bun,
                 "spoon_count": formObject.spoon_count,
-                "user_id": user[0].user_id
+                "user_id": user.user_id
             };
+            console.log(burgerData)
             const response = await axios.post('http://127.0.0.1:5000/burger/', burgerData, {
                 withCredentials: true, headers: {
                     'Content-Type': 'application/json',
@@ -109,7 +113,9 @@ export default function Kitchen() {
             });
             const burger = response.data
             setBurger(burger)
+            console.log(burger)
         } catch (error) {
+            console.log(error)
             setError(error.response?.data?.error || 'An error occurred during creation.')
         }
     };
@@ -135,7 +141,7 @@ export default function Kitchen() {
     const handleTemplate = async () => {
         try {
             const user = JSON.parse(Cookies.get('currentUser'))
-            const updatedData = { burger_id: burger.id, user_id: user[0].user_id, is_template: true };
+            const updatedData = { burger_id: burger.id, user_id: user.user_id, is_template: true };
             const response = await axios.patch(`http://127.0.0.1:5000/burger/${burger.id}`, updatedData, {
                 withCredentials: true,
                 headers: { 'Content-Type': 'application/json' }
@@ -207,8 +213,6 @@ export default function Kitchen() {
                         <div className="burgerForm">
                 {!burger && (
                     <form onSubmit={handleSubmit} aria-labelledby="burger-heading">
-                       
-
                         <div className="burgerInputs">
                         
                         <div className="inputBlock">
@@ -225,7 +229,7 @@ export default function Kitchen() {
                         <div className="inputBlock">
                             <label htmlFor="meat" className="meat">Meat: </label>
                             <input
-                                type="meat"
+                                type="text"
                                 autoComplete="current-meat"
                                 id="meat"
                                 name="meat"
@@ -235,7 +239,7 @@ export default function Kitchen() {
                         <div className="inputBlock">
                             <label htmlFor="cheese" className="cheese">Cheese: </label>
                             <input
-                                type="cheese"
+                                type="text"
                                 autoComplete="current-cheese"
                                 id="cheese"
                                 name="cheese"
@@ -245,7 +249,7 @@ export default function Kitchen() {
                         <div className="inputBlock">
                             <label htmlFor="sauce" className="sauce">Sauce: </label>
                             <input
-                                type="sauce"
+                                type="text"
                                 autoComplete="current-sauce"
                                 id="sauce"
                                 name="sauce"
@@ -255,7 +259,7 @@ export default function Kitchen() {
                         <div className="inputBlock">
                             <label htmlFor="bottom_bun" className="bottom_bun">Bottom Bun: </label>
                             <input
-                                type="bottom_bun"
+                                type="text"
                                 autoComplete="current-bottom_bun"
                                 id="bottom_bun"
                                 name="bottom_bun"
@@ -265,7 +269,7 @@ export default function Kitchen() {
                         <div className="inputBlock">
                             <label htmlFor="spoon_count" className="spoon_count">Spoon Count: </label>
                             <input
-                                type="spoon_count"
+                                type="text"
                                 autoComplete="current-spoon_count"
                                 id="spoon_count"
                                 name="spoon_count"
@@ -274,7 +278,7 @@ export default function Kitchen() {
                         </div>
 
                         </div>
-                        <button className="button">Create Burger!</button>
+                        <button className="button" type="submit">Create Burger!</button>
                     </form>
                 )}
                 {/* Dynamic form for additional components */}

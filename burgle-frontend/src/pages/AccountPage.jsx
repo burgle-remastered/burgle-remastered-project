@@ -39,7 +39,7 @@ export default function AccountPage() {
           headers: {
             Accept: "application/json", // We're telling the server we expect JSON
           },
-          body: { user: user[0].user_id }
+          body: { user: user.user_id }
           ,
         });
         setBurgers(response.data.burgers); // Assuming the response contains `burgers` data
@@ -86,12 +86,12 @@ export default function AccountPage() {
     try {
       const user = JSON.parse(Cookies.get('currentUser'))
       const response = await axios.delete(
-        `http://127.0.0.1:5000/auth/user/del/${user[0].user_id}`,
+        `http://127.0.0.1:5000/auth/user/del/${user.user_id}`,
         {
           withCredentials: true,
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": `http://127.0.0.1:5000/auth/user/del/${user[0].user_id}`,
+            "Access-Control-Allow-Origin": `http://127.0.0.1:5000/auth/user/del/${user.user_id}`,
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
           }
         }

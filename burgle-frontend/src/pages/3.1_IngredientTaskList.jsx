@@ -56,7 +56,7 @@ export default function IngredientTaskList() {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json", // We're telling the server we expect JSON
-          }, body: { user: user[0].user_id }
+          }, body: { user: user.user_id }
         });
         setBurger(response.data)
       } catch (err) {
@@ -69,7 +69,7 @@ export default function IngredientTaskList() {
   const handleUpdateBurger = async (burgerComponent) => {
     try {
       const user = JSON.parse(Cookies.get('currentUser'))
-      const updatedData = { burger_id: burger.id, user_id: user[0].user_id, [burgerComponent]: newValue };
+      const updatedData = { burger_id: burger.id, user_id: user.user_id, [burgerComponent]: newValue };
       const response = await axios.patch(`http://127.0.0.1:5000/burger/${burger.id}`, updatedData, {
         withCredentials: true,
         headers: { 'Content-Type': 'application/json' }
@@ -84,7 +84,7 @@ export default function IngredientTaskList() {
   return (
     <>
     <div className="kitchenHeader">
-      <button className="backButton button" onClick={() => navigate(`/users/${currentUser[0].user_id}/kitchen`)}>Back</button>
+      <button className="backButton button" onClick={() => navigate(`/users/${currentUser.user_id}/kitchen`)}>Back</button>
       <h2>Ingredient Task List</h2>
     </div>
       {/* burger prop */}
