@@ -91,7 +91,7 @@ As a user, I want to have access to music, to help me relax as I journal.
 ---
 
 ## 💻 Technologies Used
-Frontend: Javascript, React, Three.js, Axios, and Blender
+Frontend: Javascript, React, React 3 Fiber, Three.js, Axios, and Blender
 Backend: Python, Flask, Flask-Cors, and Bycrpt 
 Database: PostgreSQl and SQLAlchemy 
 
